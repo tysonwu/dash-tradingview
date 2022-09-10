@@ -1,0 +1,11 @@
+include tvlwc/tvlwc.min.js
+include tvlwc/tvlwc.min.js.map
+include tvlwc/async-*.js
+include tvlwc/async-*.js.map
+include tvlwc/*-shared.js
+include tvlwc/*-shared.js.map
+include tvlwc/metadata.json
+include tvlwc/package-info.json
+include README.md
+include LICENSE
+include package.json
