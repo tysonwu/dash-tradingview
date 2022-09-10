@@ -19,6 +19,6 @@ Keyword arguments:
 function tvlwc(; kwargs...)
         available_props = Symbol[:id, :label, :value]
         wild_props = Symbol[]
-        return Component("tvlwc", "Tvlwc", "tvlwc", available_props, wild_props; kwargs...)
+        return Component("tvlwc", "Tvlwc", "dash_tvlwc", available_props, wild_props; kwargs...)
 end
 

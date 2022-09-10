@@ -107,7 +107,7 @@ module.exports = (env, argv) => {
                         chunks: 'all',
                         minSize: 0,
                         minChunks: 2,
-                        name: 'tvlwc-shared'
+                        name: 'dash_tvlwc-shared'
                     }
                 }
             }

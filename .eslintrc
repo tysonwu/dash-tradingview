@@ -29,7 +29,8 @@
   },
   "plugins": [
     "react",
-    "import"
+    "import",
+    "react-hooks"
   ],
   "rules": {
     "accessor-pairs": ["error"],
@@ -100,6 +101,8 @@
     "react/no-unknown-property": ["error"],
     "react/prefer-es6-class": ["error", "always"],
     "react/prop-types": "error",
+    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies    
     "valid-jsdoc": ["off"],
     "yoda": ["error"],
     "spaced-comment": ["error", "always", {

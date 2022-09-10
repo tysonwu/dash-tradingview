@@ -9,7 +9,7 @@ import sys
 import importlib
 
 
-components_package = 'tvlwc'
+components_package = 'dash_tvlwc'
 
 components_lib = importlib.import_module(components_package)
 

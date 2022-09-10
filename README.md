@@ -51,9 +51,9 @@ If you have selected install_dependencies during the prompt, you can skip this p
     - A sample test is available in `tests/test_usage.py`, it will load `usage.py` and you can then automate interactions with selenium.
     - Run the tests with `$ pytest tests`.
     - The Dash team uses these types of integration tests extensively. Browse the Dash component code on GitHub for more examples of testing (e.g. https://github.com/plotly/dash-core-components)
-- Add custom styles to your component by putting your custom CSS files into your distribution folder (`tvlwc`).
+- Add custom styles to your component by putting your custom CSS files into your distribution folder (`dash_tvlwc`).
     - Make sure that they are referenced in `MANIFEST.in` so that they get properly included when you're ready to publish your component.
-    - Make sure the stylesheets are added to the `_css_dist` dict in `tvlwc/__init__.py` so dash will serve them automatically when the component suite is requested.
+    - Make sure the stylesheets are added to the `_css_dist` dict in `dash_tvlwc/__init__.py` so dash will serve them automatically when the component suite is requested.
 - [Review your code](./review_checklist.md)
 
 ### Create a production build and publish:
@@ -72,7 +72,7 @@ If you have selected install_dependencies during the prompt, you can skip this p
 
 3. Test your tarball by copying it into a new environment and installing it locally:
     ```
-    $ pip install tvlwc-0.0.1.tar.gz
+    $ pip install dash_tvlwc-0.0.1.tar.gz
     ```
 
 4. If it works, then you can publish the component to NPM and PyPI:

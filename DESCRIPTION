@@ -1,13 +1,13 @@
-Package: tvlwc
+Package: dashTvlwc
 Title: Dash Component for Tradingview Lightweight Charts
 Version: 0.0.1
 Description: Dash Component for Tradingview Lightweight Charts
 Depends: R (>= 3.0.2)
 Imports: 
 Suggests: 
-License: Apache-2.0 + file LICENSE
-URL: https://github.com/github.com/tysonwu/tvlwc
-BugReports: https://github.com/github.com/tysonwu/tvlwc/issues
+License: MIT + file LICENSE
+URL: https://github.com/github.com/tysonwu/dash-tvlwc
+BugReports: https://github.com/github.com/tysonwu/dash-tvlwc/issues
 Encoding: UTF-8
 LazyData: true
 KeepSource: true

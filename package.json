@@ -1,29 +1,30 @@
 {
-  "name": "tvlwc",
+  "name": "dash_tvlwc",
   "version": "0.0.1",
   "description": "Dash Component for Tradingview Lightweight Charts",
-"repository": {
+  "repository": {
     "type": "git",
-    "url": "git://github.com/github.com/tysonwu/tvlwc.git"
+    "url": "git://github.com/github.com/tysonwu/dash-tvlwc.git"
   },
   "bugs": {
-    "url": "https://github.com/github.com/tysonwu/tvlwc/issues"
+    "url": "https://github.com/github.com/tysonwu/dash-tvlwc/issues"
   },
-  "homepage": "https://github.com/github.com/tysonwu/tvlwc",
+  "homepage": "https://github.com/github.com/tysonwu/dash-tvlwc",
   "main": "build/index.js",
   "scripts": {
     "start": "webpack-serve --config ./webpack.serve.config.js --open",
     "validate-init": "python _validate_init.py",
     "prepublishOnly": "npm run validate-init",
     "build:js": "webpack --mode production",
-    "build:backends": "dash-generate-components ./src/lib/components tvlwc -p package-info.json --r-prefix '' --jl-prefix '' --ignore \\.test\\.",
+    "build:backends": "dash-generate-components ./src/lib/components dash_tvlwc -p package-info.json --r-prefix '' --jl-prefix '' --ignore \\.test\\.",
     "build:backends-activated": "(. venv/bin/activate || venv\\scripts\\activate && npm run build:py_and_r)",
     "build": "npm run build:js && npm run build:backends",
     "build:activated": "npm run build:js && npm run build:backends-activated"
   },
   "author": "Kwan Yu, WU <wukwanyutyson@gmail.com>",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "dependencies": {
+    "lightweight-charts": "^3.8.0",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
@@ -31,8 +32,8 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
-    "@plotly/webpack-dash-dynamic-import": "^1.2.0",
     "@plotly/dash-component-plugins": "^1.2.0",
+    "@plotly/webpack-dash-dynamic-import": "^1.2.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "copyfiles": "^2.1.1",
@@ -41,12 +42,13 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-docgen": "^4.1.1",
     "react-dom": "^16.8.6",
-    "styled-jsx": "^3.2.1",
     "style-loader": "^0.23.1",
+    "styled-jsx": "^3.2.1",
     "terser-webpack-plugin": "^2.3.0",
     "webpack": "4.36.1",
     "webpack-cli": "3.3.6",

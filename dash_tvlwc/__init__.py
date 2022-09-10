@@ -66,13 +66,13 @@ _js_dist.extend(
 _js_dist.extend(
     [
         {
-            'relative_package_path': 'tvlwc.min.js',
+            'relative_package_path': 'dash_tvlwc.min.js',
     'external_url': 'https://unpkg.com/{0}@{2}/{1}/{1}.min.js'.format(
                 package_name, __name__, __version__),
             'namespace': package_name
         },
         {
-            'relative_package_path': 'tvlwc.min.js.map',
+            'relative_package_path': 'dash_tvlwc.min.js.map',
     'external_url': 'https://unpkg.com/{0}@{2}/{1}/{1}.min.js.map'.format(
                 package_name, __name__, __version__),
             'namespace': package_name,

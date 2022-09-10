@@ -10,9 +10,9 @@ tvlwc <- function(id=NULL, label=NULL, value=NULL) {
     component <- list(
         props = props,
         type = 'Tvlwc',
-        namespace = 'tvlwc',
+        namespace = 'dash_tvlwc',
         propNames = c('id', 'label', 'value'),
-        package = 'tvlwc'
+        package = 'dashTvlwc'
         )
 
     structure(component, class = c('dash_component', 'list'))
