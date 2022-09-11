@@ -2,7 +2,7 @@
   "name": "dash_tvlwc",
   "version": "0.0.1",
   "description": "Dash Component for Tradingview Lightweight Charts",
-"repository": {
+  "repository": {
     "type": "git",
     "url": "git://github.com/github.com/tysonwu/dash-tvlwc.git"
   },
@@ -24,6 +24,7 @@
   "author": "Kwan Yu, WU <wukwanyutyson@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "lightweight-charts": "^3.8.0",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
@@ -31,8 +32,8 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
-    "@plotly/webpack-dash-dynamic-import": "^1.2.0",
     "@plotly/dash-component-plugins": "^1.2.0",
+    "@plotly/webpack-dash-dynamic-import": "^1.2.0",
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "copyfiles": "^2.1.1",
@@ -41,12 +42,13 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-docgen": "^4.1.1",
     "react-dom": "^16.8.6",
-    "styled-jsx": "^3.2.1",
     "style-loader": "^0.23.1",
+    "styled-jsx": "^3.2.1",
     "terser-webpack-plugin": "^2.3.0",
     "webpack": "4.36.1",
     "webpack-cli": "3.3.6",

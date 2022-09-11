@@ -1,19 +1,25 @@
+# AUTO GENERATED FILE - DO NOT EDIT
+
 from dash.development.base_component import Component, _explicitize_args
 
 
 class Tvlwc(Component):
     """A Tvlwc component.
+Tradingview Lightweight Chart object
 
 Keyword arguments:
 
-- id (string; optional)
+- id (string; optional):
+    The ID of this component.
 
-- colors (dict; optional)
+- colors (dict; optional):
+    An object containing colors properties.
 
-- data (list; optional)"""
+- data (list; optional):
+    The data for the series."""
     _children_props = []
     _base_nodes = ['children']
-    _namespace = 'tvlwc'
+    _namespace = 'dash_tvlwc'
     _type = 'Tvlwc'
     @_explicitize_args
     def __init__(self, id=Component.UNDEFINED, data=Component.UNDEFINED, colors=Component.UNDEFINED, **kwargs):

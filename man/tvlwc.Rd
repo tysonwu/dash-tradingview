@@ -6,19 +6,19 @@
 \title{Tvlwc component}
 
 \description{
-ExampleComponent is an example component. It takes a property, `label`, and displays it. It renders an input with the property `value` which is editable by the user.
+Tradingview Lightweight Chart object
 }
 
 \usage{
-tvlwc(id=NULL, label=NULL, value=NULL)
+tvlwc(id=NULL, colors=NULL, data=NULL)
 }
 
 \arguments{
-\item{id}{Character. The ID used to identify this component in Dash callbacks.}
+\item{id}{Character. The ID of this component}
 
-\item{label}{Character. A label that will be printed when this component is rendered.}
+\item{colors}{Named list. An object containing colors properties}
 
-\item{value}{Character. The value displayed in the input.}
+\item{data}{Unnamed list. The data for the series}
 }
 
 \value{named list of JSON elements corresponding to React.js properties and their values}

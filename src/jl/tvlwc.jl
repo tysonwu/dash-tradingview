@@ -6,18 +6,14 @@ export tvlwc
     tvlwc(;kwargs...)
 
 A Tvlwc component.
-ExampleComponent is an example component.
-It takes a property, `label`, and
-displays it.
-It renders an input with the property `value`
-which is editable by the user.
+Tradingview Lightweight Chart object
 Keyword arguments:
-- `id` (String; optional): The ID used to identify this component in Dash callbacks.
-- `label` (String; required): A label that will be printed when this component is rendered.
-- `value` (String; optional): The value displayed in the input.
+- `id` (String; optional): The ID of this component
+- `colors` (Dict; optional): An object containing colors properties
+- `data` (Array; optional): The data for the series
 """
 function tvlwc(; kwargs...)
-        available_props = Symbol[:id, :label, :value]
+        available_props = Symbol[:id, :colors, :data]
         wild_props = Symbol[]
         return Component("tvlwc", "Tvlwc", "dash_tvlwc", available_props, wild_props; kwargs...)
 end
