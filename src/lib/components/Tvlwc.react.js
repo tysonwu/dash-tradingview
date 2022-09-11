@@ -20,8 +20,8 @@ const Tvlwc = props => {
                     textColor: colors.textColor,
                 },
                 grid: {
-                    vertLines: false,
-                    horzLines: false,
+                    vertLines: { visible: false },
+                    horzLines: { visible: false },
                 },
                 width: 1000,
                 height: 800,
