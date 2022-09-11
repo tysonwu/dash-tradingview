@@ -1,3 +1,5 @@
+> You came too early to see this project. Watch this repo to see me developing it in real-time.
+
 # Dash Tradingview Lightweight Charts Components
 
 Dash Tradingview Lightweight Charts Components is a Dash component library.
