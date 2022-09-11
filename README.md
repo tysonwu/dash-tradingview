@@ -2,7 +2,7 @@
 
 # Dash Tradingview Lightweight Charts Components
 
-Dash Tradingview Lightweight Charts Components is a Dash component library.
+Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts) written in Typescript/Javascript, and renders it for use in Python [Dash](https://dash.plotly.com/) apps.
 
 Get started with:
 1. Install Dash and its dependencies: https://dash.plotly.com/installation
