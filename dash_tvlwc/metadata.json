@@ -18,12 +18,12 @@
         "required": false,
         "description": "The data for the series"
       },
-      "colors": {
+      "chartOptions": {
         "type": {
           "name": "object"
         },
         "required": false,
-        "description": "An object containing colors properties"
+        "description": "Object containing all chart options\nSee https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options"
       }
     }
   }

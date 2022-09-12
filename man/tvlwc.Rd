@@ -10,13 +10,14 @@ Tradingview Lightweight Chart object
 }
 
 \usage{
-tvlwc(id=NULL, colors=NULL, data=NULL)
+tvlwc(id=NULL, chartOptions=NULL, data=NULL)
 }
 
 \arguments{
 \item{id}{Character. The ID of this component}
 
-\item{colors}{Named list. An object containing colors properties}
+\item{chartOptions}{Named list. Object containing all chart options
+See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options}
 
 \item{data}{Unnamed list. The data for the series}
 }

@@ -1,9 +1,9 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
 #' @export
-tvlwc <- function(id=NULL, colors=NULL, data=NULL) {
+tvlwc <- function(id=NULL, chartOptions=NULL, data=NULL) {
     
-    props <- list(id=id, colors=colors, data=data)
+    props <- list(id=id, chartOptions=chartOptions, data=data)
     if (length(props) > 0) {
         props <- props[!vapply(props, is.null, logical(1))]
     }
@@ -11,7 +11,7 @@ tvlwc <- function(id=NULL, colors=NULL, data=NULL) {
         props = props,
         type = 'Tvlwc',
         namespace = 'dash_tvlwc',
-        propNames = c('id', 'colors', 'data'),
+        propNames = c('id', 'chartOptions', 'data'),
         package = 'dashTvlwc'
         )
 

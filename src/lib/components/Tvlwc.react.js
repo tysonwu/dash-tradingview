@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { createChart, ColorType } from 'lightweight-charts';
+import { createChart } from 'lightweight-charts';
 
 
 /**
@@ -9,23 +9,16 @@ import { createChart, ColorType } from 'lightweight-charts';
 
 const Tvlwc = props => {
 
-    const {id, data, colors} = props;
+    const {
+        id, 
+        data,
+        chartOptions,
+    } = props;
     const chartContainerRef = useRef();
 
     useEffect(
         () => {
-            const chart = createChart(chartContainerRef.current, {
-                layout: {
-                    background: { type: ColorType.Solid, color: colors.backgroundColor },
-                    textColor: colors.textColor,
-                },
-                grid: {
-                    vertLines: { visible: false },
-                    horzLines: { visible: false },
-                },
-                width: 1000,
-                height: 800,
-            });
+            const chart = createChart(chartContainerRef.current, chartOptions);
             
             const handleResize = () => {
                 chart.applyOptions({ width: chartContainerRef.current.clientWidth });
@@ -42,14 +35,11 @@ const Tvlwc = props => {
                 chart.remove();
             };
         },
-        [data, colors.backgroundColor, colors.lineColor, colors.textColor, colors.areaTopColor, colors.areaBottomColor]
+        [data, chartOptions]
     );
 
     return (
-        <div>
-            <h1>Hello!!!!</h1>
-            <div id={id} ref={chartContainerRef}></div>
-        </div>
+        <div id={id} ref={chartContainerRef}></div>
     );        
 }
 
@@ -67,9 +57,10 @@ Tvlwc.propTypes = {
     data: PropTypes.array,
 
     /**
-     * An object containing colors properties
+     * Object containing all chart options
+     * See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options
      */
-    colors: PropTypes.object,
+    chartOptions: PropTypes.object,
 
     // setProps: PropTypes.func
 };
