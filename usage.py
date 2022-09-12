@@ -2,6 +2,7 @@ import dash_tvlwc
 import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
+from pprint import pprint
 
 from usage_dummy_data import candlestick_data, series_data
 
@@ -68,32 +69,26 @@ app.layout = html.Div([
 ])
 
 
-# @app.callback(
-#     [Output('tv-chart', 'data')], 
-#     [Input('input-submit', 'n_clicks')],
-#     [State('input', 'value')]
-# )
-# def display_output(n, value):
-#     return [candlestick_data[-value:]]
+# callback to change candlestick data
+@app.callback(
+    [Output('tv-chart', 'data')], 
+    [Input('input-submit', 'n_clicks')],
+    [State('input', 'value'), State('tv-chart', 'data')]
+)
+def display_output(n, value, series_data):
+    series_data[0]['seriesData'] = data[0]['seriesData'][-value:]
+    return [series_data]
 
 
-# @app.callback(
-#     [Output('tv-chart', 'chartOptions')], 
-#     [Input('background-color-submit', 'n_clicks')],
-#     [State('background-color', 'value')]
-# )
-# def display_output(n, value):
-#     chart_options = {
-#         'layout': {
-#             'background': {'type': Colors.backgroundType, 'color': value},
-#             'textColor': Colors.textColor,
-#         },
-#         'grid': {
-#             'vertLines': {'visible': False},
-#             'horzLines': {'visible': False},
-#         },
-#     }
-#     return [chart_options]
+# callback to change background color
+@app.callback(
+    [Output('tv-chart', 'chartOptions')], 
+    [Input('background-color-submit', 'n_clicks')],
+    [State('background-color', 'value'), State('tv-chart', 'chartOptions')]
+)
+def display_output(n, value, current_chart_options):
+    current_chart_options['layout']['background']['color'] = value
+    return [current_chart_options]
 
 
 
