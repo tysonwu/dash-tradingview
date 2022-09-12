@@ -3,7 +3,7 @@ import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
 
-from usage_dummy_data import candlestick_data as data
+from usage_dummy_data import candlestick_data, series_data
 
 app = dash.Dash(__name__)
 
@@ -25,14 +25,28 @@ chart_options = {
         'vertLines': {'visible': False},
         'horzLines': {'visible': False},
     },
-    'width': 1000,
-    'height': 800
+    # 'width': 100,
+    # 'height': 200
 }
+
+# seriesType options: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/SeriesOptionsMap
+data = [
+    {
+        'seriesData': candlestick_data,
+        'seriesType': 'Candlestick',
+        # 'seriesOptions': {'upColor': '#ffffff'}
+    },
+    {
+        'seriesData': series_data,
+        'seriesType': 'Area',
+        # 'seriesOptions': {'lineWidth': 1}
+    }
+]
 
 app.layout = html.Div([
     html.Div(children=[
-        html.P(f'There are {len(data)} datapoints. Show only recent:'),
-        dcc.Input(id='input', type='number', value=len(data)),
+        html.P(f'There are {len(candlestick_data)} datapoints. Show only recent:'),
+        dcc.Input(id='input', type='number', value=len(candlestick_data)),
         html.Button('Submit', id='input-submit'),
     ]),
     
@@ -46,43 +60,40 @@ app.layout = html.Div([
         dash_tvlwc.Tvlwc(
             id='tv-chart',
             data=data,
+            width='100%',
+            height=400,
             chartOptions=chart_options
-        ), style={'width': '900px', 'height': '900px', 'background': 'grey'}
+        ), style={'background': 'grey'}
     )
 ])
 
 
-@app.callback(
-    [Output('tv-chart', 'data')], 
-    [Input('input-submit', 'n_clicks')],
-    [State('input', 'value')]
-)
-def display_output(n, value):
-    return [data[-value:]]
+# @app.callback(
+#     [Output('tv-chart', 'data')], 
+#     [Input('input-submit', 'n_clicks')],
+#     [State('input', 'value')]
+# )
+# def display_output(n, value):
+#     return [candlestick_data[-value:]]
 
 
-@app.callback(
-    [Output('tv-chart', 'chartOptions')], 
-    [Input('background-color-submit', 'n_clicks')],
-    [
-        State('background-color', 'value'),
-        State('tv-chart', 'chartOptions'),
-    ]
-)
-def display_output(n, value, option_state):
-    chart_options = {
-        'layout': {
-            'background': {'type': Colors.backgroundType, 'color': value},
-            'textColor': Colors.textColor,
-        },
-        'grid': {
-            'vertLines': {'visible': False},
-            'horzLines': {'visible': False},
-        },
-        'width': 1000,
-        'height': 800
-    }
-    return [chart_options]
+# @app.callback(
+#     [Output('tv-chart', 'chartOptions')], 
+#     [Input('background-color-submit', 'n_clicks')],
+#     [State('background-color', 'value')]
+# )
+# def display_output(n, value):
+#     chart_options = {
+#         'layout': {
+#             'background': {'type': Colors.backgroundType, 'color': value},
+#             'textColor': Colors.textColor,
+#         },
+#         'grid': {
+#             'vertLines': {'visible': False},
+#             'horzLines': {'visible': False},
+#         },
+#     }
+#     return [chart_options]
 
 
 

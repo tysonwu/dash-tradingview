@@ -12,6 +12,8 @@ const Tvlwc = props => {
     const {
         id, 
         data,
+        width,
+        height,
         chartOptions,
     } = props;
     const chartContainerRef = useRef();
@@ -24,9 +26,21 @@ const Tvlwc = props => {
                 chart.applyOptions({ width: chartContainerRef.current.clientWidth });
             };
             chart.timeScale().fitContent();
-
-            const newSeries = chart.addCandlestickSeries();
-            newSeries.setData(data);
+            
+            for (const series of data) {
+                let s;
+                switch (series.seriesType) {
+                    case 'Candlestick':
+                        s = chart.addCandlestickSeries(series.seriesOptions);
+                        break;
+                    case 'Area':
+                        s = chart.addAreaSeries(series.seriesOptions);
+                        break;
+                    default:
+                        break;
+                    }
+                s.setData(series.seriesData);
+            };            
 
             window.addEventListener('resize', handleResize);
 
@@ -39,11 +53,14 @@ const Tvlwc = props => {
     );
 
     return (
-        <div id={id} ref={chartContainerRef}></div>
-    );        
+        <div id={id} ref={chartContainerRef} style={{height: height, width: width}} />
+    );
 }
 
-Tvlwc.defaultProps = {};
+Tvlwc.defaultProps = {
+    width: 600,
+    height: 400,
+};
 
 Tvlwc.propTypes = {
     /**
@@ -54,7 +71,23 @@ Tvlwc.propTypes = {
     /**
      * The data for the series
      */
-    data: PropTypes.array,
+    data: PropTypes.arrayOf(PropTypes.shape(
+        {
+            seriesData: PropTypes.arrayOf(PropTypes.object),
+            seriesType: PropTypes.oneOf(['Candlestick', 'Area']),
+            seriesOptions: PropTypes.object,
+        }
+    )),
+    
+    /**
+     * Sets width of the parent div of the chart
+     */
+    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
+    /**
+     * Sets height of the parent div of the chart
+     */
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
      * Object containing all chart options
