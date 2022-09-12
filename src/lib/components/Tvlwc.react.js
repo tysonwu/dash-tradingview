@@ -30,12 +30,24 @@ const Tvlwc = props => {
             for (const series of data) {
                 let s;
                 switch (series.seriesType) {
-                    case 'Candlestick':
+                    case 'bar':
+                        s = chart.addBarSeries(series.seriesOptions);
+                        break;                    
+                    case 'candlestick':
                         s = chart.addCandlestickSeries(series.seriesOptions);
                         break;
-                    case 'Area':
+                    case 'area':
                         s = chart.addAreaSeries(series.seriesOptions);
                         break;
+                    case 'baseline':
+                        s = chart.addBaselineSeries(series.seriesOptions);
+                        break;
+                    case 'line':
+                        s = chart.addLineSeries(series.seriesOptions);
+                        break;
+                    case 'histogram':
+                        s = chart.addHistogramSeries(series.seriesOptions);
+                        break;                        
                     default:
                         break;
                     }
@@ -74,7 +86,7 @@ Tvlwc.propTypes = {
     data: PropTypes.arrayOf(PropTypes.shape(
         {
             seriesData: PropTypes.arrayOf(PropTypes.object),
-            seriesType: PropTypes.oneOf(['Candlestick', 'Area']),
+            seriesType: PropTypes.oneOf(['bar', 'candlestick', 'area', 'baseline', 'line', 'histogram']),
             seriesOptions: PropTypes.object,
         }
     )),
