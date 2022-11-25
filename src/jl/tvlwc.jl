@@ -14,7 +14,7 @@ See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOp
 - `data` (optional): The data for the series. data has the following type: Array of lists containing elements 'seriesData', 'seriesType', 'seriesOptions'.
 Those elements have the following types:
   - `seriesData` (Array of Dicts; optional)
-  - `seriesType` (a value equal to: 'Candlestick', 'Area'; optional)
+  - `seriesType` (a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram'; optional)
   - `seriesOptions` (Dict; optional)s
 - `height` (String | Real; optional): Sets height of the parent div of the chart
 - `width` (String | Real; optional): Sets width of the parent div of the chart

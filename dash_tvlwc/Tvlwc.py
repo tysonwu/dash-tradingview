@@ -26,7 +26,7 @@ Keyword arguments:
 
     - seriesOptions (dict; optional)
 
-    - seriesType (a value equal to: 'Candlestick', 'Area'; optional)
+    - seriesType (a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram'; optional)
 
 - height (string | number; default 400):
     Sets height of the parent div of the chart.

@@ -2,7 +2,6 @@ import dash_tvlwc
 import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
-from pprint import pprint
 
 from usage_dummy_data import candlestick_data, series_data
 
@@ -34,12 +33,12 @@ chart_options = {
 data = [
     {
         'seriesData': candlestick_data,
-        'seriesType': 'Candlestick',
+        'seriesType': 'candlestick',
         # 'seriesOptions': {'upColor': '#ffffff'}
     },
     {
         'seriesData': series_data,
-        'seriesType': 'Area',
+        'seriesType': 'area',
         # 'seriesOptions': {'lineWidth': 1}
     }
 ]
@@ -50,13 +49,13 @@ app.layout = html.Div([
         dcc.Input(id='input', type='number', value=len(candlestick_data)),
         html.Button('Submit', id='input-submit'),
     ]),
-    
+
     html.Div(children=[
         html.P(f'Change background color'),
         dcc.Input(id='background-color', type='text', value='#1B2631'),
         html.Button('Submit', id='background-color-submit'),
     ]),
-    
+
     html.Div(
         dash_tvlwc.Tvlwc(
             id='tv-chart',
@@ -71,7 +70,7 @@ app.layout = html.Div([
 
 # callback to change candlestick data
 @app.callback(
-    [Output('tv-chart', 'data')], 
+    [Output('tv-chart', 'data')],
     [Input('input-submit', 'n_clicks')],
     [State('input', 'value'), State('tv-chart', 'data')]
 )
@@ -82,11 +81,11 @@ def display_output(n, value, series_data):
 
 # callback to change background color
 @app.callback(
-    [Output('tv-chart', 'chartOptions')], 
+    [Output('tv-chart', 'chartOptions')],
     [Input('background-color-submit', 'n_clicks')],
     [State('background-color', 'value'), State('tv-chart', 'chartOptions')]
 )
-def display_output(n, value, current_chart_options):
+def change_props(n, value, current_chart_options):
     current_chart_options['layout']['background']['color'] = value
     return [current_chart_options]
 

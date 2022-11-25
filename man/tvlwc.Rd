@@ -23,7 +23,7 @@ See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOp
 \item{data}{List of lists containing elements 'seriesdata', 'seriestype', 'seriesoptions'.
 those elements have the following types:
   - seriesdata (list of named lists; optional)
-  - seriestype (a value equal to: 'candlestick', 'area'; optional)
+  - seriestype (a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram'; optional)
   - seriesoptions (named list; optional)s. The data for the series}
 
 \item{height}{Character | numeric. Sets height of the parent div of the chart}

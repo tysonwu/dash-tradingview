@@ -28,11 +28,27 @@
                 "name": "enum",
                 "value": [
                   {
-                    "value": "'Candlestick'",
+                    "value": "'bar'",
                     "computed": false
                   },
                   {
-                    "value": "'Area'",
+                    "value": "'candlestick'",
+                    "computed": false
+                  },
+                  {
+                    "value": "'area'",
+                    "computed": false
+                  },
+                  {
+                    "value": "'baseline'",
+                    "computed": false
+                  },
+                  {
+                    "value": "'line'",
+                    "computed": false
+                  },
+                  {
+                    "value": "'histogram'",
                     "computed": false
                   }
                 ],
