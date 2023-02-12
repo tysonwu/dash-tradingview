@@ -6,7 +6,7 @@ Dash Tradingview Lightweight Charts Components is a Dash component library. This
 
 ## Demo from `example/usage.py`
 
-#### Showcasing 1-to-1 chart and seris option capability as in original lightweight chart
+#### Showcasing 1-to-1 chart and series option capability as in original lightweight chart
 ![Demo](./docs/demo.png "Demo")
 
 #### Possibilities with [Dash callbacks](https://dash.plotly.com/basic-callbacks): modifying chart options and data on arbitrary triggers:
