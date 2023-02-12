@@ -15,7 +15,7 @@ Dash Tradingview Lightweight Charts Components is a Dash component library. This
 > Remarks: Not all interactivity from original Tradingview Lightweight chart in Javascript are compatible. Interactivity is, at this point, limited.
 
 #### Minimal example component
-```{Python}
+```python
 chart_options = {
     'layout': {'background': {'type': 'solid', 'color': 'black'}},
     'grid': {'vertLines': {'visible': False}, 'horzLines': {'visible': False}},
