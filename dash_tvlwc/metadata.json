@@ -62,7 +62,11 @@
           }
         },
         "required": false,
-        "description": "The data for the series"
+        "description": "The data for the series",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
       },
       "width": {
         "type": {
@@ -107,7 +111,11 @@
           "name": "object"
         },
         "required": false,
-        "description": "Object containing all chart options\nSee https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options"
+        "description": "Object containing all chart options\nSee https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
       }
     }
   }

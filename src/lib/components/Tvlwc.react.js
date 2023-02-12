@@ -10,7 +10,7 @@ import { createChart } from 'lightweight-charts';
 const Tvlwc = props => {
 
     const {
-        id, 
+        id,
         data,
         width,
         height,
@@ -21,18 +21,18 @@ const Tvlwc = props => {
     useEffect(
         () => {
             const chart = createChart(chartContainerRef.current, chartOptions);
-            
+
             const handleResize = () => {
                 chart.applyOptions({ width: chartContainerRef.current.clientWidth });
             };
             chart.timeScale().fitContent();
-            
+
             for (const series of data) {
                 let s;
                 switch (series.seriesType) {
                     case 'bar':
                         s = chart.addBarSeries(series.seriesOptions);
-                        break;                    
+                        break;
                     case 'candlestick':
                         s = chart.addCandlestickSeries(series.seriesOptions);
                         break;
@@ -47,12 +47,12 @@ const Tvlwc = props => {
                         break;
                     case 'histogram':
                         s = chart.addHistogramSeries(series.seriesOptions);
-                        break;                        
+                        break;
                     default:
                         break;
                     }
                 s.setData(series.seriesData);
-            };            
+            };
 
             window.addEventListener('resize', handleResize);
 
@@ -70,8 +70,10 @@ const Tvlwc = props => {
 }
 
 Tvlwc.defaultProps = {
+    data: [],
     width: 600,
     height: 400,
+    chartOptions: {}
 };
 
 Tvlwc.propTypes = {
@@ -90,7 +92,7 @@ Tvlwc.propTypes = {
             seriesOptions: PropTypes.object,
         }
     )),
-    
+
     /**
      * Sets width of the parent div of the chart
      */
@@ -105,7 +107,7 @@ Tvlwc.propTypes = {
      * Object containing all chart options
      * See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options
      */
-    chartOptions: PropTypes.object,
+    chartOptions: PropTypes.object
 
     // setProps: PropTypes.func
 };

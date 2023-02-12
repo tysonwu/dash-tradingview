@@ -1,17 +1,38 @@
-> *You came too early to see this project. Watch this repo to see me developing it in real-time.*
+<div style="text-align: center">
+<h1>🎛 Dash Tradingview Lightweight Charts Component 📊</h1>
+</div>
 
-# Dash Tradingview Lightweight Charts Components
-
+## Introduction
 Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts) written in Typescript/Javascript, and renders it for use in Python [Dash](https://dash.plotly.com/) apps.
 
-Get started with:
-1. Install Dash and its dependencies: https://dash.plotly.com/installation
-2. Run `python usage.py`
-3. Visit http://localhost:8050 in your web browser
+## Demo from `example/usage.py`
+
+- Showcasing 1-to-1 chart and seris option capability as in original lightweight chart
+![Demo](./docs/demo.png "Demo")
+
+- Possibilities with Dash callbacks to change chart options and data:
+![Interactivity](./docs/interactivity.gif "Interactivity")
+
+## Installation
+
+- Currently not published yet. Users will need to build from this repo.
+
+## Features
+
+### Chart options
+
+
+### Interactivity
 
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## Development
+
+1. Install Dash and its dependencies: https://dash.plotly.com/installation
+2. Run demonstration script with `python example/usage.py`
+3. Visit the demo Dash app at http://localhost:8050 in your web browser
 
 ### Install dependencies
 

@@ -1,0 +1,21 @@
+h2 {
+    text-align: center;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px;
+    grid-template-areas:
+        "one one one"
+        "two three four"
+        "five six seven"
+    }
+    .container.one { grid-area: one;}
+    .container.two { grid-area: two;}
+    .container.three { grid-area: three;}
+    .container.four { grid-area: four;}
+    .container.five { grid-area: five;}
+    .container.six { grid-area: six;}
+    .container.seven { grid-area: seven;}
