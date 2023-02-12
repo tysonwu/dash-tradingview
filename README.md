@@ -2,7 +2,6 @@
 <h1>🎛 Dash Tradingview Lightweight Charts Component 📊</h1>
 </div>
 
-## Introduction
 Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts) written in Typescript/Javascript, and renders it for use in Python [Dash](https://dash.plotly.com/) apps.
 
 ## Demo from `example/usage.py`
@@ -10,12 +9,15 @@ Dash Tradingview Lightweight Charts Components is a Dash component library. This
 - Showcasing 1-to-1 chart and seris option capability as in original lightweight chart
 ![Demo](./docs/demo.png "Demo")
 
-- Possibilities with Dash callbacks to change chart options and data:
+- Possibilities with [Dash callbacks](https://dash.plotly.com/basic-callbacks): modifying chart options and data on arbitrary triggers:
 ![Interactivity](./docs/interactivity.gif "Interactivity")
+
+> Remarks: Not all interactivity from original Tradingview Lightweight chart in Javascript are compatible. Interactivity is, at this point, limited.
+
 
 ## Installation
 
-- Currently not published yet. Users will need to build from this repo.
+> Currently not published on PyPI. Users will need to build from this repo.
 
 ## Features
 
