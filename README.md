@@ -7,6 +7,29 @@ Dash Tradingview Lightweight Charts Components is a Dash component library. This
 ## Demo from `example/usage.py`
 
 #### Showcasing 1-to-1 chart and series option capability as in original lightweight chart
+##### Minimal example component
+```{Python}
+chart_options = {
+    'layout': {'background': {'type': 'solid', 'color': 'black'}},
+    'grid': {'vertLines': {'visible': False}, 'horzLines': {'visible': False}},
+}
+series_type = 'area'
+series_options = {'lineColor': '#FFAA30', 'topColor': '#2962FF',
+                  'bottomColor': 'rgba(180, 98, 200, 0.1)', 'priceLineWidth': 3,
+                  'priceLineColor': 'red'}
+series_data = [{'time': '2020-01-01', 'value': 10.0}, ...]
+
+dash_tvlwc.Tvlwc(
+    id='area-chart',
+    data=[{
+        'seriesData': series_data,
+        'seriesType': series_type,
+        'seriesOptions': series_options
+    }],
+    width='100%',
+    chartOptions=chart_options
+)
+```
 ![Demo](./docs/demo.png "Demo")
 
 #### Possibilities with [Dash callbacks](https://dash.plotly.com/basic-callbacks): modifying chart options and data on arbitrary triggers:
