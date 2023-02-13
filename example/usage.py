@@ -1,3 +1,5 @@
+import random
+
 import dash_tvlwc
 import dash
 from dash.dependencies import Input, Output, State
@@ -25,6 +27,7 @@ chart_options = {
         'vertLines': {'visible': False},
         'horzLines': {'visible': False},
     },
+    'localization': {'locale': 'en-US'}
 }
 
 # seriesType options: https://tradingview.github.io/lightweight-charts/docs/api/interfaces/SeriesOptionsMap
@@ -115,6 +118,7 @@ panel3 = [
 
 p4_series = generate_random_series(v0=5000, n=50)
 p4_mean = sum([p['value'] for p in p4_series]) / 50
+p4_max = max([p['value'] for p in p4_series])
 panel4 = [
     html.H2('Baseline'),
     dash_tvlwc.Tvlwc(
@@ -123,25 +127,54 @@ panel4 = [
             'seriesData': p4_series,
             'seriesType': 'baseline',
             'seriesOptions': {'baseValue': {'type': 'price', 'price': p4_mean},
-                              'topFillColor1': 'rgba(255,255,255,0.9)', 'topFillColor2': 'rgba(255,255,255,0)',
-                              'topLineColor': 'white', 'crosshairMarkerRadius': 8, 'lineWidth': 5}
+                              'topFillColor1': 'black', 'topFillColor2': 'rgba(255,255,255,0)',
+                              'topLineColor': 'black', 'crosshairMarkerRadius': 8, 'lineWidth': 5,
+                              'priceScaleId': 'left'},
+            'priceLines': [{'price': p4_max, 'color': '#2962FF', 'lineStyle': 0, 'title': 'MAX PRICE', 'axisLabelVisible': True}]
         }],
         width='100%',
-        chartOptions=chart_options
+        chartOptions={
+            'rightPriceScale': {'visible': False},
+            'leftPriceScale': {'visible': True, 'borderColor': 'rgba(197, 203, 206, 1)',},
+            'timeScale': {'visible': False},
+            'grid': {'vertLines': {'visible': False}, 'horzLines': {'style': 0, 'color': 'black'}},
+        }
     )
 ]
 
 
-# some random whitespace data
+# add markers and add color to volume bar
+p5_series = generate_random_series(v0=1, n=50, ret=0.1)
+markers = [
+    {'time': p5_series[15]['time'], 'position': 'aboveBar', 'color': '#f68410', 'shape': 'circle', 'text': 'Signal'},
+    {'time': p5_series[20]['time'], 'position': 'belowBar', 'color': 'white', 'shape': 'arrowUp', 'text': 'Buy'}
+]
+p5_series_volume = generate_random_series(v0=100, n=50, ret=0.05)
+for i in p5_series_volume:
+    i['color'] = random.choice(['rgba(0, 150, 136, 0.8)', 'rgba(255,82,82, 0.8)'])
+
 panel5 = [
-    html.H2('Line'),
+    html.H2('Line and volume'),
     dash_tvlwc.Tvlwc(
         id='line-chart',
         data=[{
-            'seriesData': generate_random_series(v0=1, n=50, ret=0.1),
+            'seriesData': p5_series,
             'seriesType': 'line',
-            'seriesOptions': {}
-        }],
+            'seriesOptions': {'lineWidth': 1},
+            'markers': markers
+        },
+        {
+            'seriesData': p5_series_volume,
+            'seriesType': 'histogram',
+            'seriesOptions': {
+                'color': '#26a69a',
+                'priceFormat': {'type': 'volume'},
+                'priceScaleId': '',
+                'scaleMargins': {'top': 0.9, 'bottom': 0},
+                'priceLineVisible': False
+            },
+        },
+        ],
         width='100%',
         chartOptions=chart_options
     )

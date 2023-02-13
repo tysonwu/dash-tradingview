@@ -12,8 +12,6 @@ Dash Tradingview Lightweight Charts Components is a Dash component library. This
 #### Possibilities with [Dash callbacks](https://dash.plotly.com/basic-callbacks): modifying chart options and data on arbitrary triggers:
 ![Interactivity](./docs/interactivity.gif "Interactivity")
 
-> Remarks: Not all interactivity from original Tradingview Lightweight chart in Javascript are compatible. Interactivity is, at this point, limited.
-
 #### Minimal example component
 ```python
 chart_options = {
@@ -46,8 +44,11 @@ dash_tvlwc.Tvlwc(
 
 ### Chart options
 
+For the complete list of chart options and series options available, please refer to [the official API document](https://tradingview.github.io/lightweight-charts/docs/api).
 
 ### Interactivity
+
+> Remarks: Not all interactivity from original Tradingview Lightweight chart in Javascript are compatible. Interactivity is, at this point, limited.
 
 ## Contributing
 

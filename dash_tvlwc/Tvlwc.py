@@ -22,6 +22,10 @@ Keyword arguments:
 
     `data` is a list of dicts with keys:
 
+    - markers (list of dicts; optional)
+
+    - priceLines (list of dicts; optional)
+
     - seriesData (list of dicts; optional)
 
     - seriesOptions (dict; optional)

@@ -52,6 +52,12 @@ const Tvlwc = props => {
                         break;
                     }
                 s.setData(series.seriesData);
+                if ('markers' in series) {
+                    s.setMarkers(series.markers);
+                }
+                if ('priceLines' in series) {
+                    for (const pl of series.priceLines) { s.createPriceLine(pl) };
+                }
             };
 
             window.addEventListener('resize', handleResize);
@@ -90,6 +96,8 @@ Tvlwc.propTypes = {
             seriesData: PropTypes.arrayOf(PropTypes.object),
             seriesType: PropTypes.oneOf(['bar', 'candlestick', 'area', 'baseline', 'line', 'histogram']),
             seriesOptions: PropTypes.object,
+            markers: PropTypes.arrayOf(PropTypes.object),
+            priceLines: PropTypes.arrayOf(PropTypes.object)
         }
     )),
 
