@@ -39,7 +39,6 @@ panel1 = [
     html.Button('Change background color', id='change-background-color'),
     html.Button('Generate new candlestick data', id='generate-new-candlestick-data'),
     html.Div(id='tv-chart-1-event-info'),
-    html.Button('get info', id='info-btn'),
 ]
 
 
@@ -178,28 +177,27 @@ def change_props(n, series_options):
 @app.callback(
     [Output('tv-chart-1-event-info', 'children')],
     [
-        Input('info-btn', 'n_clicks'),
         Input('tv-chart-1', 'crosshair'),
         Input('tv-chart-1', 'click'),
     ],
-    # [
-    #     State('tv-chart-1', 'fullChartOptions'),
-    #     State('tv-chart-1', 'fullPriceScaleOptions'),
-    #     State('tv-chart-1', 'priceScaleWidth'),
-    #     State('tv-chart-1', 'fullSeriesOptions'),
-    #     State('tv-chart-1', 'timeRangeVisibleRange'),
-    #     State('tv-chart-1', 'timeRangeVisibleLogicalRange'),
-    #     State('tv-chart-1', 'timeScaleWidth'),
-    #     State('tv-chart-1', 'timeScaleHeight'),
-    #     State('tv-chart-1', 'fullTimeScaleOptions'),
-    # ],
+    [
+        # State('tv-chart-1', 'fullChartOptions'),
+        # State('tv-chart-1', 'fullPriceScaleOptions'),
+        # State('tv-chart-1', 'priceScaleWidth'),
+        # State('tv-chart-1', 'fullSeriesOptions'),
+        # State('tv-chart-1', 'timeRangeVisibleRange'),
+        # State('tv-chart-1', 'timeRangeVisibleLogicalRange'),
+        # State('tv-chart-1', 'timeScaleWidth'),
+        # State('tv-chart-1', 'timeScaleHeight'),
+        # State('tv-chart-1', 'fullTimeScaleOptions'),
+    ],
     prevent_initial_call=True
 )
-def change_props(*args, **kwargs):
+def change_props(crosshair, click):
     return [
         html.Div(children=[
-            html.Span(str(args)),
-            html.Span(str(kwargs)),
+            html.Span(str(crosshair)),
+            html.Span(str(click)),
         ])
     ]
 

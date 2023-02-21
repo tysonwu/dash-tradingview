@@ -67,6 +67,8 @@ The Tradingview Lightweight Chart library is highly customizable in style. For t
 **Read-only props**
 - `crosshair`: position of last mouse hover on chart (crosshair coordinates).
 - `click`: position of last mouse click on chart (click coordinates).
+
+*WIP, may or may not work*
 - `fullChartOptions`: full dict of applied chart options including default options.
 - `fullPriceScaleOptions`: full dict of applied series options including default options.
 - `timeRangeVisibleRange`

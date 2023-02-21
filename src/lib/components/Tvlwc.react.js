@@ -41,13 +41,15 @@ const Tvlwc = props => {
             };
             chart.timeScale().fitContent();
 
-            var allSeries = [];
+            // keep track of all series on chart
+            const allSeries = new Map();
             for (var i = 0; i < seriesData.length; i++) {
-                var series, options, data, markers, priceLines;
+                var series, options, data, markers, priceLines, seriesId;
                 options = seriesOptions[i] ? seriesOptions[i] : {};
                 data = seriesData[i] ? seriesData[i] : [];
                 markers = seriesMarkers[i] ? seriesMarkers[i] : [];
                 priceLines = seriesPriceLines[i] ? seriesPriceLines[i] : [];
+                seriesId = i;
 
                 switch (seriesTypes[i]) {
                     case 'bar':
@@ -74,14 +76,24 @@ const Tvlwc = props => {
                 series.setData(data);
                 series.setMarkers(markers);
                 for (const pl of priceLines) { series.createPriceLine(pl); }
-                allSeries.push(series);
+                allSeries.set(series, seriesId);
             };
-
             window.addEventListener('resize', handleResize);
 
-            // subscribe to all crosshair and chart clicks
-            chart.subscribeCrosshairMove((param) => { setProps({ crosshair: param }) });
-            chart.subscribeClick((param) => { setProps({ click: param }) });
+            // remove the param key as ISeriesApi is not serializable
+            function handleMouseEvent(param) {
+                const seriesPricesMerge = {}
+                for (const [seriesApi, seriesPrice] of param.seriesPrices) {
+                    seriesPricesMerge[allSeries.get(seriesApi)] = seriesPrice
+                }
+                param.seriesPrices = seriesPricesMerge;
+                return param;
+            };
+
+            chart.subscribeCrosshairMove((param) => { setProps({ crosshair: handleMouseEvent(param) }) });
+            chart.subscribeClick((param) => { setProps({ click: handleMouseEvent(param) }) });
+
+            // subscribe timeScale events
             chart.timeScale().subscribeVisibleTimeRangeChange(() => { setProps({ timeRangeVisibleRange: chart.timeScale().getVisibleRange() }) });
             chart.timeScale().subscribeVisibleLogicalRangeChange(() => { setProps({ timeRangeVisibleLogicalRange: chart.timeScale().getVisibleLogicalRange() }) });
             chart.timeScale().subscribeSizeChange(() => { setProps({ timeScaleWidth: chart.timeScale().width(), timeScaleHeight: chart.timeScale().height() }) })
@@ -90,7 +102,7 @@ const Tvlwc = props => {
                 fullChartOptions: chart.options(),
                 fullPriceScaleOptions: chart.priceScale().options(),
                 priceScaleWidth: chart.priceScale().width(),
-                fullSeriesOptions: allSeries.map((series) => {series.options()}),
+                // fullSeriesOptions: [...allSeries.keys()].map((seriesApi) => {seriesApi.options()}),
                 timeRangeVisibleRange: chart.timeScale().getVisibleRange(),
                 timeRangeVisibleLogicalRange: chart.timeScale().getVisibleLogicalRange(),
                 timeScaleWidth: chart.timeScale().width(),
