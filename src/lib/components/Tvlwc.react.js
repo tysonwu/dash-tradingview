@@ -56,19 +56,19 @@ const Tvlwc = props => {
                     case 'candlestick':
                         series = chart.addCandlestickSeries(options);
                         break;
-                        case 'area':
+                    case 'area':
                         series = chart.addAreaSeries(options);
                         break;
-                        case 'baseline':
-                            series = chart.addBaselineSeries(options);
+                    case 'baseline':
+                        series = chart.addBaselineSeries(options);
                         break;
-                        case 'line':
+                    case 'line':
                         series = chart.addLineSeries(options);
                         break;
-                        case 'histogram':
-                            series = chart.addHistogramSeries(options);
-                            break;
-                            default:
+                    case 'histogram':
+                        series = chart.addHistogramSeries(options);
+                        break;
+                    default:
                         break;
                     }
                 series.setData(data);
