@@ -11,15 +11,29 @@ const Tvlwc = props => {
 
     const {
         id,
-        data,
+        setProps,
+        chartOptions,
+        seriesData,
+        seriesTypes,
+        seriesOptions,
+        seriesMarkers,
+        seriesPriceLines,
         width,
         height,
-        chartOptions,
     } = props;
+
     const chartContainerRef = useRef();
 
     useEffect(
         () => {
+            if ('localization' in chartOptions) {
+                if ('priceFormatter' in chartOptions.localization) {
+                    chartOptions.localization.priceFormatter = eval(chartOptions.localization.priceFormatter);
+                }
+                if ('timeFormatter' in chartOptions.localization) {
+                    chartOptions.localization.timeFormatter = eval(chartOptions.localization.timeFormatter);
+                }
+            }
             const chart = createChart(chartContainerRef.current, chartOptions);
 
             const handleResize = () => {
@@ -27,47 +41,79 @@ const Tvlwc = props => {
             };
             chart.timeScale().fitContent();
 
-            for (const series of data) {
-                let s;
-                switch (series.seriesType) {
+            var allSeries = [];
+            for (var i = 0; i < seriesData.length; i++) {
+                var series, options, data, markers, priceLines;
+                options = seriesOptions[i] ? seriesOptions[i] : {};
+                data = seriesData[i] ? seriesData[i] : [];
+                markers = seriesMarkers[i] ? seriesMarkers[i] : [];
+                priceLines = seriesPriceLines[i] ? seriesPriceLines[i] : [];
+
+                switch (seriesTypes[i]) {
                     case 'bar':
-                        s = chart.addBarSeries(series.seriesOptions);
+                        series = chart.addBarSeries(options);
                         break;
                     case 'candlestick':
-                        s = chart.addCandlestickSeries(series.seriesOptions);
+                        series = chart.addCandlestickSeries(options);
                         break;
-                    case 'area':
-                        s = chart.addAreaSeries(series.seriesOptions);
+                        case 'area':
+                        series = chart.addAreaSeries(options);
                         break;
-                    case 'baseline':
-                        s = chart.addBaselineSeries(series.seriesOptions);
+                        case 'baseline':
+                            series = chart.addBaselineSeries(options);
                         break;
-                    case 'line':
-                        s = chart.addLineSeries(series.seriesOptions);
+                        case 'line':
+                        series = chart.addLineSeries(options);
                         break;
-                    case 'histogram':
-                        s = chart.addHistogramSeries(series.seriesOptions);
-                        break;
-                    default:
+                        case 'histogram':
+                            series = chart.addHistogramSeries(options);
+                            break;
+                            default:
                         break;
                     }
-                s.setData(series.seriesData);
-                if ('markers' in series) {
-                    s.setMarkers(series.markers);
-                }
-                if ('priceLines' in series) {
-                    for (const pl of series.priceLines) { s.createPriceLine(pl) };
-                }
+                series.setData(data);
+                series.setMarkers(markers);
+                for (const pl of priceLines) { series.createPriceLine(pl); }
+                allSeries.push(series);
             };
 
             window.addEventListener('resize', handleResize);
+
+            // subscribe to all crosshair and chart clicks
+            chart.subscribeCrosshairMove((param) => { setProps({ crosshair: param }) });
+            chart.subscribeClick((param) => { setProps({ click: param }) });
+            chart.timeScale().subscribeVisibleTimeRangeChange(() => { setProps({ timeRangeVisibleRange: chart.timeScale().getVisibleRange() }) });
+            chart.timeScale().subscribeVisibleLogicalRangeChange(() => { setProps({ timeRangeVisibleLogicalRange: chart.timeScale().getVisibleLogicalRange() }) });
+            chart.timeScale().subscribeSizeChange(() => { setProps({ timeScaleWidth: chart.timeScale().width(), timeScaleHeight: chart.timeScale().height() }) })
+
+            setProps({
+                fullChartOptions: chart.options(),
+                fullPriceScaleOptions: chart.priceScale().options(),
+                priceScaleWidth: chart.priceScale().width(),
+                fullSeriesOptions: allSeries.map((series) => {series.options()}),
+                timeRangeVisibleRange: chart.timeScale().getVisibleRange(),
+                timeRangeVisibleLogicalRange: chart.timeScale().getVisibleLogicalRange(),
+                timeScaleWidth: chart.timeScale().width(),
+                timeScaleHeight: chart.timeScale().height(),
+                fullTimeScaleOptions: chart.timeScale().options(),
+            })
 
             return () => {
                 window.removeEventListener('resize', handleResize);
                 chart.remove();
             };
         },
-        [data, chartOptions]
+        [
+            setProps,
+            chartOptions,
+            seriesData,
+            seriesTypes,
+            seriesOptions,
+            seriesMarkers,
+            seriesPriceLines,
+            width,
+            height,
+        ]
     );
 
     return (
@@ -76,10 +122,25 @@ const Tvlwc = props => {
 }
 
 Tvlwc.defaultProps = {
-    data: [],
+    chartOptions: {},
+    seriesData: [],
+    seriesTypes: [],
+    seriesOptions: [],
+    seriesMarkers: [],
+    seriesPriceLines: [],
+    crosshair: null,
+    click: null,
+    fullChartOptions: {},
+    fullPriceScaleOptions: {},
+    priceScaleWidth: null,
+    fullSeriesOptions: [],
+    timeRangeVisibleRange: {},
+    timeRangeVisibleLogicalRange: {},
+    timeScaleWidth: null,
+    timeScaleHeight: null,
+    fullTimeScaleOptions: {},
     width: 600,
     height: 400,
-    chartOptions: {}
 };
 
 Tvlwc.propTypes = {
@@ -89,17 +150,90 @@ Tvlwc.propTypes = {
     id: PropTypes.string,
 
     /**
-     * The data for the series
+     * Object containing all chart options
+     * See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options
      */
-    data: PropTypes.arrayOf(PropTypes.shape(
-        {
-            seriesData: PropTypes.arrayOf(PropTypes.object),
-            seriesType: PropTypes.oneOf(['bar', 'candlestick', 'area', 'baseline', 'line', 'histogram']),
-            seriesOptions: PropTypes.object,
-            markers: PropTypes.arrayOf(PropTypes.object),
-            priceLines: PropTypes.arrayOf(PropTypes.object)
-        }
-    )),
+    chartOptions: PropTypes.object,
+
+    /**
+     * Data for the series
+     */
+    seriesData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
+
+    /**
+     * Type of the series
+     */
+    seriesTypes: PropTypes.arrayOf(PropTypes.oneOf(['bar', 'candlestick', 'area', 'baseline', 'line', 'histogram'])),
+
+    /**
+     * Options for the series
+     */
+    seriesOptions: PropTypes.arrayOf(PropTypes.object),
+
+    /**
+     * Additional markers for the series
+     */
+    seriesMarkers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
+
+    /**
+     * Additional price lines for the series
+     */
+    seriesPriceLines: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.object)),
+
+    /**
+     * Crosshair coordinates; read-only
+     */
+    crosshair: PropTypes.object,
+
+    /**
+     * Last-clicked on chart coordinates; read-only
+     */
+    click: PropTypes.object,
+
+    /**
+     * Full chart options including defaults; read-only
+     */
+    fullChartOptions: PropTypes.object,
+
+    /**
+     * Full chart price scale options including defaults; read-only
+     */
+    fullPriceScaleOptions: PropTypes.object,
+
+    /**
+     * Width of price scale; read-only
+     */
+    priceScaleWidth: PropTypes.number,
+
+    /**
+     * Full series options including defaults; read-only
+     */
+    fullSeriesOptions: PropTypes.arrayOf(PropTypes.object),
+
+    /**
+     * Visible time range; read-only
+     */
+    timeRangeVisibleRange: PropTypes.object,
+
+    /**
+     * Visible logical range; read-only
+     */
+    timeRangeVisibleLogicalRange: PropTypes.object,
+
+    /**
+     * Width of time scale; read-only
+     */
+    timeScaleWidth: PropTypes.number,
+
+    /**
+     * Height of time scale; read-only
+     */
+    timeScaleHeight: PropTypes.number,
+
+    /**
+     * Full time scale options including defaults; read-only
+     */
+    fullTimeScaleOptions: PropTypes.object,
 
     /**
      * Sets width of the parent div of the chart
@@ -112,12 +246,9 @@ Tvlwc.propTypes = {
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
-     * Object containing all chart options
-     * See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options
+     * Set props
      */
-    chartOptions: PropTypes.object
-
-    // setProps: PropTypes.func
+    setProps: PropTypes.func,
 };
 
 export default Tvlwc;
