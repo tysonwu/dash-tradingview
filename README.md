@@ -4,37 +4,77 @@
 
 Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts) written in Typescript/Javascript, and renders it for use in Python [Dash](https://dash.plotly.com/) apps.
 
-## Demo from `example/usage.py`
+## Demo
 
-#### Showcasing 1-to-1 chart and series option capability as in original lightweight chart
-![Demo](./docs/demo.png "Demo")
+### Chart and series style options
+- 1-to-1 chart and series option capability as in original lightweight chart
+- See `./example/options.py`
+![Options](./docs/options.png "Options")
 
-#### Possibilities with [Dash callbacks](https://dash.plotly.com/basic-callbacks): modifying chart options and data on arbitrary triggers:
+### Interactivity with [Dash callbacks](https://dash.plotly.com/basic-callbacks)
+- Modify data or styles on any triggers
+- See `./example/interactivity.py`
 ![Interactivity](./docs/interactivity.gif "Interactivity")
 
-#### Minimal example component
+### Minimal example
 ```python
-chart_options = {
-    'layout': {'background': {'type': 'solid', 'color': 'black'}},
-    'grid': {'vertLines': {'visible': False}, 'horzLines': {'visible': False}},
-}
-series_type = 'area'
-series_options = {'lineColor': '#FFAA30', 'topColor': '#2962FF',
-                  'bottomColor': 'rgba(180, 98, 200, 0.1)', 'priceLineWidth': 3,
-                  'priceLineColor': 'red'}
 series_data = [{'time': '2020-01-01', 'value': 10.0}, ...]
 
+series_options = [{
+    'lineColor': '#FFAA30',
+    'topColor': '#2962FF',
+    'priceLineWidth': 3,
+    'priceLineColor': 'red'
+}]
+
+chart_options = {
+    'layout': {
+        'background': {'type': 'solid', 'color': '#1B2631'},
+        'textColor': 'white',
+    },
+    'grid': {
+        'vertLines': {'visible': False},
+        'horzLines': {'visible': False},
+    },
+    'localization': {'locale': 'en-US'}
+}
+
 dash_tvlwc.Tvlwc(
-    id='area-chart',
-    data=[{
-        'seriesData': series_data,
-        'seriesType': series_type,
-        'seriesOptions': series_options
-    }],
+    id='bar-chart',
+    seriesData=[series_data],
+    seriesTypes=['bar'],
+    seriesOptions=[series_options]
     width='100%',
     chartOptions=chart_options
 )
 ```
+
+## References: Chart properties
+
+The Tradingview Lightweight Chart library is highly customizable in style. For the complete list of chart options and series options available, please refer to [the official API document](https://tradingview.github.io/lightweight-charts/docs/api).
+
+**Configurable props**
+
+- `chartOptions`: a dict of options on chart canvas.
+- `seriesData`: a list series of list of timepoint dicts on series data.
+- `seriesTypes`: a list of series types, in the same order as `seriesData`.
+- `seriesOptions`: a list of series option dict for each series, in the same order as `seriesData`.
+- `seriesMarkers`: a list of list of markers dicts for each series, in the same order as `seriesData`.
+- `seriesPriceLines`: a list of list of price line dicts for each series, in the same order as `seriesData`.
+- `width`: width of outer container of the chart.
+- `height`: height of outer container of the chart.
+
+**Read-only props**
+- `crosshair`: position of last mouse hover on chart (crosshair coordinates).
+- `click`: position of last mouse click on chart (click coordinates).
+- `fullChartOptions`: full dict of applied chart options including default options.
+- `fullPriceScaleOptions`: full dict of applied series options including default options.
+- `timeRangeVisibleRange`
+- `timeRangeVisibleLogicalRange`
+- `timeScaleWidth`: width of time scale
+- `timeScaleHeight`: height of time scale
+- `fullTimeScaleOptions`: full dict of applied time scale options including default options.
+
 
 ## Installation
 
@@ -42,9 +82,6 @@ dash_tvlwc.Tvlwc(
 
 ## Features
 
-### Chart options
-
-For the complete list of chart options and series options available, please refer to [the official API document](https://tradingview.github.io/lightweight-charts/docs/api).
 
 ### Interactivity
 
