@@ -71,21 +71,14 @@ The Tradingview Lightweight Chart library is highly customizable in style. For t
 - `fullPriceScaleOptions`: full dict of applied series options including default options.
 - `timeRangeVisibleRange`
 - `timeRangeVisibleLogicalRange`
-- `timeScaleWidth`: width of time scale
-- `timeScaleHeight`: height of time scale
+- `timeScaleWidth`: width of time scale.
+- `timeScaleHeight`: height of time scale.
 - `fullTimeScaleOptions`: full dict of applied time scale options including default options.
 
 
 ## Installation
 
 > Currently not published on PyPI. Users will need to build from this repo.
-
-## Features
-
-
-### Interactivity
-
-> Remarks: Not all interactivity from original Tradingview Lightweight chart in Javascript are compatible. Interactivity is, at this point, limited.
 
 ## Contributing
 
