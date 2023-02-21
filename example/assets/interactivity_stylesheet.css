@@ -1,0 +1,14 @@
+h2 {
+    text-align: center;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 10px;
+    grid-template-areas:
+        "one two"
+    }
+    .container.one { grid-area: one;}
+    .container.two { grid-area: two;}

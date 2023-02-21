@@ -11,74 +11,243 @@
         "required": false,
         "description": "The ID of this component"
       },
-      "data": {
+      "chartOptions": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Object containing all chart options\nSee https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "seriesData": {
         "type": {
           "name": "arrayOf",
           "value": {
-            "name": "shape",
+            "name": "arrayOf",
             "value": {
-              "seriesData": {
-                "name": "arrayOf",
-                "value": {
-                  "name": "object"
-                },
-                "required": false
-              },
-              "seriesType": {
-                "name": "enum",
-                "value": [
-                  {
-                    "value": "'bar'",
-                    "computed": false
-                  },
-                  {
-                    "value": "'candlestick'",
-                    "computed": false
-                  },
-                  {
-                    "value": "'area'",
-                    "computed": false
-                  },
-                  {
-                    "value": "'baseline'",
-                    "computed": false
-                  },
-                  {
-                    "value": "'line'",
-                    "computed": false
-                  },
-                  {
-                    "value": "'histogram'",
-                    "computed": false
-                  }
-                ],
-                "required": false
-              },
-              "seriesOptions": {
-                "name": "object",
-                "required": false
-              },
-              "markers": {
-                "name": "arrayOf",
-                "value": {
-                  "name": "object"
-                },
-                "required": false
-              },
-              "priceLines": {
-                "name": "arrayOf",
-                "value": {
-                  "name": "object"
-                },
-                "required": false
-              }
+              "name": "object"
             }
           }
         },
         "required": false,
-        "description": "The data for the series",
+        "description": "Data for the series",
         "defaultValue": {
           "value": "[]",
+          "computed": false
+        }
+      },
+      "seriesTypes": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "enum",
+            "value": [
+              {
+                "value": "'bar'",
+                "computed": false
+              },
+              {
+                "value": "'candlestick'",
+                "computed": false
+              },
+              {
+                "value": "'area'",
+                "computed": false
+              },
+              {
+                "value": "'baseline'",
+                "computed": false
+              },
+              {
+                "value": "'line'",
+                "computed": false
+              },
+              {
+                "value": "'histogram'",
+                "computed": false
+              }
+            ]
+          }
+        },
+        "required": false,
+        "description": "Type of the series",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "seriesOptions": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "object"
+          }
+        },
+        "required": false,
+        "description": "Options for the series",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "seriesMarkers": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "arrayOf",
+            "value": {
+              "name": "object"
+            }
+          }
+        },
+        "required": false,
+        "description": "Additional markers for the series",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "seriesPriceLines": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "arrayOf",
+            "value": {
+              "name": "object"
+            }
+          }
+        },
+        "required": false,
+        "description": "Additional price lines for the series",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "crosshair": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Crosshair coordinates; read-only",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "click": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Last-clicked on chart coordinates; read-only",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "fullChartOptions": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Full chart options including defaults; read-only",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "fullPriceScaleOptions": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Full chart price scale options including defaults; read-only",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "priceScaleWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Width of price scale; read-only",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "fullSeriesOptions": {
+        "type": {
+          "name": "arrayOf",
+          "value": {
+            "name": "object"
+          }
+        },
+        "required": false,
+        "description": "Full series options including defaults; read-only",
+        "defaultValue": {
+          "value": "[]",
+          "computed": false
+        }
+      },
+      "timeRangeVisibleRange": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Visible time range; read-only",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "timeRangeVisibleLogicalRange": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Visible logical range; read-only",
+        "defaultValue": {
+          "value": "{}",
+          "computed": false
+        }
+      },
+      "timeScaleWidth": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Width of time scale; read-only",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "timeScaleHeight": {
+        "type": {
+          "name": "number"
+        },
+        "required": false,
+        "description": "Height of time scale; read-only",
+        "defaultValue": {
+          "value": "null",
+          "computed": false
+        }
+      },
+      "fullTimeScaleOptions": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Full time scale options including defaults; read-only",
+        "defaultValue": {
+          "value": "{}",
           "computed": false
         }
       },
@@ -120,16 +289,12 @@
           "computed": false
         }
       },
-      "chartOptions": {
+      "setProps": {
         "type": {
-          "name": "object"
+          "name": "func"
         },
         "required": false,
-        "description": "Object containing all chart options\nSee https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions for possible options",
-        "defaultValue": {
-          "value": "{}",
-          "computed": false
-        }
+        "description": "Set props"
       }
     }
   }

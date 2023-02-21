@@ -17,23 +17,56 @@ Keyword arguments:
     https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOptions
     for possible options.
 
-- data (list of dicts; optional):
-    The data for the series.
+- click (dict; optional):
+    Last-clicked on chart coordinates; read-only.
 
-    `data` is a list of dicts with keys:
+- crosshair (dict; optional):
+    Crosshair coordinates; read-only.
 
-    - markers (list of dicts; optional)
+- fullChartOptions (dict; optional):
+    Full chart options including defaults; read-only.
 
-    - priceLines (list of dicts; optional)
+- fullPriceScaleOptions (dict; optional):
+    Full chart price scale options including defaults; read-only.
 
-    - seriesData (list of dicts; optional)
+- fullSeriesOptions (list of dicts; optional):
+    Full series options including defaults; read-only.
 
-    - seriesOptions (dict; optional)
-
-    - seriesType (a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram'; optional)
+- fullTimeScaleOptions (dict; optional):
+    Full time scale options including defaults; read-only.
 
 - height (string | number; default 400):
     Sets height of the parent div of the chart.
+
+- priceScaleWidth (number; optional):
+    Width of price scale; read-only.
+
+- seriesData (list of list of dictss; optional):
+    Data for the series.
+
+- seriesMarkers (list of list of dictss; optional):
+    Additional markers for the series.
+
+- seriesOptions (list of dicts; optional):
+    Options for the series.
+
+- seriesPriceLines (list of list of dictss; optional):
+    Additional price lines for the series.
+
+- seriesTypes (list of a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram's; optional):
+    Type of the series.
+
+- timeRangeVisibleLogicalRange (dict; optional):
+    Visible logical range; read-only.
+
+- timeRangeVisibleRange (dict; optional):
+    Visible time range; read-only.
+
+- timeScaleHeight (number; optional):
+    Height of time scale; read-only.
+
+- timeScaleWidth (number; optional):
+    Width of time scale; read-only.
 
 - width (string | number; default 600):
     Sets width of the parent div of the chart."""
@@ -42,10 +75,10 @@ Keyword arguments:
     _namespace = 'dash_tvlwc'
     _type = 'Tvlwc'
     @_explicitize_args
-    def __init__(self, id=Component.UNDEFINED, data=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, chartOptions=Component.UNDEFINED, **kwargs):
-        self._prop_names = ['id', 'chartOptions', 'data', 'height', 'width']
+    def __init__(self, id=Component.UNDEFINED, chartOptions=Component.UNDEFINED, seriesData=Component.UNDEFINED, seriesTypes=Component.UNDEFINED, seriesOptions=Component.UNDEFINED, seriesMarkers=Component.UNDEFINED, seriesPriceLines=Component.UNDEFINED, crosshair=Component.UNDEFINED, click=Component.UNDEFINED, fullChartOptions=Component.UNDEFINED, fullPriceScaleOptions=Component.UNDEFINED, priceScaleWidth=Component.UNDEFINED, fullSeriesOptions=Component.UNDEFINED, timeRangeVisibleRange=Component.UNDEFINED, timeRangeVisibleLogicalRange=Component.UNDEFINED, timeScaleWidth=Component.UNDEFINED, timeScaleHeight=Component.UNDEFINED, fullTimeScaleOptions=Component.UNDEFINED, width=Component.UNDEFINED, height=Component.UNDEFINED, **kwargs):
+        self._prop_names = ['id', 'chartOptions', 'click', 'crosshair', 'fullChartOptions', 'fullPriceScaleOptions', 'fullSeriesOptions', 'fullTimeScaleOptions', 'height', 'priceScaleWidth', 'seriesData', 'seriesMarkers', 'seriesOptions', 'seriesPriceLines', 'seriesTypes', 'timeRangeVisibleLogicalRange', 'timeRangeVisibleRange', 'timeScaleHeight', 'timeScaleWidth', 'width']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'chartOptions', 'data', 'height', 'width']
+        self.available_properties = ['id', 'chartOptions', 'click', 'crosshair', 'fullChartOptions', 'fullPriceScaleOptions', 'fullSeriesOptions', 'fullTimeScaleOptions', 'height', 'priceScaleWidth', 'seriesData', 'seriesMarkers', 'seriesOptions', 'seriesPriceLines', 'seriesTypes', 'timeRangeVisibleLogicalRange', 'timeRangeVisibleRange', 'timeScaleHeight', 'timeScaleWidth', 'width']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
