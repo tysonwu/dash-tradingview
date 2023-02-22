@@ -239,7 +239,6 @@ def change_props(crosshair, click, n, options):
     prevent_initial_call=True
 )
 def add_chart(n):
-    print('callback!')
     return [dash_tvlwc.Tvlwc(
         seriesData=[generate_random_series(v0=15, n=50), generate_random_series(v0=15, n=50)],
         seriesTypes=['area', 'line'],
