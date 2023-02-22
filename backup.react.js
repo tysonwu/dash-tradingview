@@ -22,13 +22,11 @@ const Tvlwc = props => {
         height,
     } = props;
 
-    const chartContainerRef = useRef(null);
+    const chartContainerRef = useRef();
     const tvChart = useRef(null);
 
-    // keep track of all series on chart seriesId => seriesApi
-    const allSeries = useRef(new Map());
-
     function handleChartOptions(chartOptions) {
+        // function to evaluate js string given from user to function if there is any
         if ('localization' in chartOptions) {
             if ('priceFormatter' in chartOptions.localization) {
                 chartOptions.localization.priceFormatter = eval(chartOptions.localization.priceFormatter);
@@ -40,41 +38,65 @@ const Tvlwc = props => {
         return chartOptions;
     };
 
-    function handleMouseEvent(param) {
-        // match index key (seriesId) to the param by joining through seriesApi
-        param.seriesPrices = Object.fromEntries([...allSeries.current].map(([seriesId, seriesApi]) => [seriesId, param.seriesPrices.get(seriesApi)]));
-        return param;
-    };
-
-    const handleResize = () => {
-        tvChart.current.applyOptions({ width: chartContainerRef.current.clientWidth, height: chartContainerRef.current.clientHeight });
-    };
-
     useEffect(
         () => {
-            return () => {
-                tvChart.current.remove();
-                window.removeEventListener('resize', handleResize);
+            tvChart.current = createChart(chartContainerRef.current, handleChartOptions(chartOptions));
+
+            const handleResize = () => {
+                tvChart.current.applyOptions(
+                    { width: chartContainerRef.current.clientWidth, height: chartContainerRef.current.clientHeight }
+                );
             };
-        },
-        [chartContainerRef]
-    )
+            window.addEventListener('resize', handleResize);
 
-    useEffect(
-        () => {
-            if (tvChart.current) {
-                // tvChart already exists and just apply chart options
-                tvChart.current.applyOptions(handleChartOptions(chartOptions));
-            } else {
-                // tvChart is null, so create one (probably first init)
-                tvChart.current = createChart(chartContainerRef.current, handleChartOptions(chartOptions));
-                window.addEventListener('resize', handleResize);
-                tvChart.current.timeScale().fitContent();
-                // update the height and width once upon init
-                handleResize();
-                tvChart.current.subscribeCrosshairMove((param) => { setProps({ crosshair: handleMouseEvent(param) }) });
-                tvChart.current.subscribeClick((param) => { setProps({ click: handleMouseEvent(param) }) });
-            }
+            tvChart.current.timeScale().fitContent();
+
+            // keep track of all series on chart seriesId => seriesApi
+            const allSeries = new Map();
+            for (var i = 0; i < seriesData.length; i++) {
+                var series, options, data, markers, priceLines, seriesId;
+                options = seriesOptions[i] ? seriesOptions[i] : {};
+                data = seriesData[i] ? seriesData[i] : [];
+                markers = seriesMarkers[i] ? seriesMarkers[i] : [];
+                priceLines = seriesPriceLines[i] ? seriesPriceLines[i] : [];
+                seriesId = i;
+
+                switch (seriesTypes[i]) {
+                    case 'bar':
+                        series = tvChart.current.addBarSeries(options);
+                        break;
+                    case 'candlestick':
+                        series = tvChart.current.addCandlestickSeries(options);
+                        break;
+                    case 'area':
+                        series = tvChart.current.addAreaSeries(options);
+                        break;
+                    case 'baseline':
+                        series = tvChart.current.addBaselineSeries(options);
+                        break;
+                    case 'line':
+                        series = tvChart.current.addLineSeries(options);
+                        break;
+                    case 'histogram':
+                        series = tvChart.current.addHistogramSeries(options);
+                        break;
+                    default:
+                        break;
+                    }
+                series.setData(data);
+                series.setMarkers(markers);
+                for (const pl of priceLines) { series.createPriceLine(pl); }
+                allSeries.set(seriesId, series);
+            };
+
+            function handleMouseEvent(param) {
+                // match index key (seriesId) to the param by joining through seriesApi
+                param.seriesPrices = Object.fromEntries([...allSeries].map(([seriesId, seriesApi]) => [seriesId, param.seriesPrices.get(seriesApi)]));
+                return param;
+            };
+
+            tvChart.current.subscribeCrosshairMove((param) => { setProps({ crosshair: handleMouseEvent(param) }) });
+            tvChart.current.subscribeClick((param) => { setProps({ click: handleMouseEvent(param) }) });
 
             // subscribe timeScale events
             tvChart.current.timeScale().subscribeVisibleTimeRangeChange(() => {
@@ -91,84 +113,31 @@ const Tvlwc = props => {
                 fullChartOptions: tvChart.current.options(),
                 fullPriceScaleOptions: tvChart.current.priceScale().options(),
                 priceScaleWidth: tvChart.current.priceScale().width(),
+                // get the seriesApi.option() in each of the seriesApi in allSeries; with seriesId (in allSeries) as key
+                fullSeriesOptions: Object.fromEntries([...allSeries].map(([seriesId, seriesApi]) => [seriesId, seriesApi.options()])),
                 fullTimeScaleOptions: tvChart.current.timeScale().options(),
-            });
-        },
-        [
-            setProps,
-            chartOptions,
-            width,
-            height
-        ]
-    );
-
-    useEffect(
-        () => {
-            if (tvChart.current) {
-                const newSeries = new Map();
-                for (var i = 0; i < seriesData.length; i++) {
-                    var series, options, data, markers, priceLines, seriesId;
-                    options = seriesOptions[i] ? seriesOptions[i] : {};
-                    data = seriesData[i] ? seriesData[i] : [];
-                    markers = seriesMarkers[i] ? seriesMarkers[i] : [];
-                    priceLines = seriesPriceLines[i] ? seriesPriceLines[i] : [];
-                    seriesId = i;
-
-                    switch (seriesTypes[i]) {
-                        case 'bar':
-                            series = tvChart.current.addBarSeries(options);
-                            break;
-                        case 'candlestick':
-                            series = tvChart.current.addCandlestickSeries(options);
-                            break;
-                        case 'area':
-                            series = tvChart.current.addAreaSeries(options);
-                            break;
-                        case 'baseline':
-                            series = tvChart.current.addBaselineSeries(options);
-                            break;
-                        case 'line':
-                            series = tvChart.current.addLineSeries(options);
-                            break;
-                        case 'histogram':
-                            series = tvChart.current.addHistogramSeries(options);
-                            break;
-                        default:
-                            break;
-                        }
-                    series.setData(data);
-                    series.setMarkers(markers);
-                    for (const pl of priceLines) { series.createPriceLine(pl); }
-                    // add this seriesId and seriesApi pair to existing allSeries state
-                    newSeries.set(seriesId, series);
-                };
-
-                allSeries.current = newSeries;
-
-                setProps({
-                    // get the seriesApi.option() in each of the seriesApi in allSeries; with seriesId (in allSeries) as key
-                    fullSeriesOptions: Object.fromEntries([...allSeries.current].map(([seriesId, seriesApi]) => [seriesId, seriesApi.options()])),
-                })
-            }
+            })
 
             return () => {
-                allSeries.current.forEach( (seriesApi) => {
-                    tvChart.current.removeSeries(seriesApi);
-                });
+                window.removeEventListener('resize', handleResize);
+                tvChart.current.remove();
             };
         },
         [
             setProps,
+            chartOptions,
             seriesData,
             seriesTypes,
             seriesOptions,
             seriesMarkers,
-            seriesPriceLines
+            seriesPriceLines,
+            width,
+            height,
         ]
     );
 
     return (
-        <div id={id} ref={chartContainerRef} style={{height: height, width: width}} />
+        <div id={id} ref={chartContainerRef} style={{ height: height, width: width }} />
     );
 }
 

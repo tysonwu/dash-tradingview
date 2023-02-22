@@ -6,6 +6,7 @@ import dash
 from dash.dependencies import Input, Output, State
 from dash import html, dcc
 
+from dash_tvlwc.types import ColorType, SeriesType
 from example.data_generator import generate_random_ohlc, generate_random_series
 
 
@@ -17,11 +18,11 @@ panel1 = [
         dash_tvlwc.Tvlwc(
             id='tv-chart-1',
             seriesData=[generate_random_ohlc(100, n=50)],
-            seriesTypes=['candlestick'],
+            seriesTypes=[SeriesType.Candlestick],
             width='100%',
             chartOptions={
                 'layout': {
-                    'background': {'type': 'solid', 'color': '#1B2631'},
+                    'background': {'type': ColorType.Solid, 'color': '#1B2631'},
                     'textColor': 'white',
                 },
                 'grid': {
@@ -38,6 +39,7 @@ panel1 = [
     html.Button('Change chart type', id='change-chart-type'),
     html.Button('Change background color', id='change-background-color'),
     html.Button('Generate new candlestick data', id='generate-new-candlestick-data'),
+    html.Button('Info', id='info-btn'),
     html.Div(id='tv-chart-1-event-info'),
 ]
 
@@ -88,7 +90,11 @@ app.layout = html.Div([
     html.Div(className='container', children=[
         html.Div(className='one', children=panel1),
         html.Div(className='two', children=panel2),
-    ])
+        html.Div(className='three', children=[
+            html.Button('Add a new chart', id='add'),
+            html.Div(id='tv-chart-3')
+        ]),
+    ]),
 ])
 
 
@@ -179,9 +185,10 @@ def change_props(n, series_options):
     [
         Input('tv-chart-1', 'crosshair'),
         Input('tv-chart-1', 'click'),
+        Input('info-btn', 'n_clicks')
     ],
     [
-        # State('tv-chart-1', 'fullChartOptions'),
+        State('tv-chart-1', 'fullChartOptions'),
         # State('tv-chart-1', 'fullPriceScaleOptions'),
         # State('tv-chart-1', 'priceScaleWidth'),
         # State('tv-chart-1', 'fullSeriesOptions'),
@@ -193,13 +200,65 @@ def change_props(n, series_options):
     ],
     prevent_initial_call=True
 )
-def change_props(crosshair, click):
+def change_props(crosshair, click, n, options):
+    crosshairhtml = []
+    clickhtml = []
+    optionshtml = []
+
+    if crosshair is not None:
+        for k, v in crosshair.items():
+            crosshairhtml.append(html.Div([
+                html.P(str(k)),
+                html.P(str(v)),
+            ]))
+    if click is not None:
+        for k, v in click.items():
+            clickhtml.append(html.Div([
+                html.P(str(k)),
+                html.P(str(v)),
+            ]))
+    if options is not None:
+        for k, v in options.items():
+            optionshtml.append(html.Div([
+                html.P(str(k)),
+                html.P(str(v)),
+            ]))
+    # optionshtml.append(html.P(str(options)))
     return [
         html.Div(children=[
-            html.Span(str(crosshair)),
-            html.Span(str(click)),
+            html.Div(crosshairhtml),
+            html.Div(clickhtml),
+            html.Div(optionshtml)
         ])
     ]
+
+
+@app.callback(
+    [Output('tv-chart-3', 'children')],
+    [Input('add', 'n_clicks')],
+    prevent_initial_call=True
+)
+def add_chart(n):
+    print('callback!')
+    return [dash_tvlwc.Tvlwc(
+        seriesData=[generate_random_series(v0=15, n=50), generate_random_series(v0=15, n=50)],
+        seriesTypes=['area', 'line'],
+        seriesOptions=[{'priceLineWidth': 2}, {'priceLineWidth': 1}],
+        seriesMarkers=p2markers,
+        seriesPriceLines=p2pricelines,
+        # width='30%',
+        chartOptions= {
+            'layout': {
+                'background': {'type': 'solid', 'color': '#1B2631'},
+                'textColor': 'white',
+            },
+            'grid': {
+                'vertLines': {'visible': True, 'color': 'rgba(255,255,255,0.1)'},
+                'horzLines': {'visible': True, 'color': 'rgba(255,255,255,0.1)'},
+            },
+            'localization': {'locale': 'en-US'}
+        }
+    )]
 
 
 if __name__ == '__main__':

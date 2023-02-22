@@ -29,7 +29,7 @@ Keyword arguments:
 - fullPriceScaleOptions (dict; optional):
     Full chart price scale options including defaults; read-only.
 
-- fullSeriesOptions (list of dicts; optional):
+- fullSeriesOptions (dict; optional):
     Full series options including defaults; read-only.
 
 - fullTimeScaleOptions (dict; optional):
@@ -57,10 +57,10 @@ Keyword arguments:
     Type of the series.
 
 - timeRangeVisibleLogicalRange (dict; optional):
-    Visible logical range; read-only.
+    Visible logical range (bar numbers); read-only.
 
 - timeRangeVisibleRange (dict; optional):
-    Visible time range; read-only.
+    Visible time range (dates); read-only.
 
 - timeScaleHeight (number; optional):
     Height of time scale; read-only.

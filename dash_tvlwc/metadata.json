@@ -134,7 +134,7 @@
         "required": false,
         "description": "Crosshair coordinates; read-only",
         "defaultValue": {
-          "value": "null",
+          "value": "{}",
           "computed": false
         }
       },
@@ -145,7 +145,7 @@
         "required": false,
         "description": "Last-clicked on chart coordinates; read-only",
         "defaultValue": {
-          "value": "null",
+          "value": "{}",
           "computed": false
         }
       },
@@ -184,15 +184,12 @@
       },
       "fullSeriesOptions": {
         "type": {
-          "name": "arrayOf",
-          "value": {
-            "name": "object"
-          }
+          "name": "object"
         },
         "required": false,
         "description": "Full series options including defaults; read-only",
         "defaultValue": {
-          "value": "[]",
+          "value": "{}",
           "computed": false
         }
       },
@@ -201,7 +198,7 @@
           "name": "object"
         },
         "required": false,
-        "description": "Visible time range; read-only",
+        "description": "Visible time range (dates); read-only",
         "defaultValue": {
           "value": "{}",
           "computed": false
@@ -212,7 +209,7 @@
           "name": "object"
         },
         "required": false,
-        "description": "Visible logical range; read-only",
+        "description": "Visible logical range (bar numbers); read-only",
         "defaultValue": {
           "value": "{}",
           "computed": false

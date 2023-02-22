@@ -15,7 +15,7 @@ See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOp
 - `crosshair` (Dict; optional): Crosshair coordinates; read-only
 - `fullChartOptions` (Dict; optional): Full chart options including defaults; read-only
 - `fullPriceScaleOptions` (Dict; optional): Full chart price scale options including defaults; read-only
-- `fullSeriesOptions` (Array of Dicts; optional): Full series options including defaults; read-only
+- `fullSeriesOptions` (Dict; optional): Full series options including defaults; read-only
 - `fullTimeScaleOptions` (Dict; optional): Full time scale options including defaults; read-only
 - `height` (String | Real; optional): Sets height of the parent div of the chart
 - `priceScaleWidth` (Real; optional): Width of price scale; read-only
@@ -24,8 +24,8 @@ See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOp
 - `seriesOptions` (Array of Dicts; optional): Options for the series
 - `seriesPriceLines` (Array of Array of Dictss; optional): Additional price lines for the series
 - `seriesTypes` (Array of a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram's; optional): Type of the series
-- `timeRangeVisibleLogicalRange` (Dict; optional): Visible logical range; read-only
-- `timeRangeVisibleRange` (Dict; optional): Visible time range; read-only
+- `timeRangeVisibleLogicalRange` (Dict; optional): Visible logical range (bar numbers); read-only
+- `timeRangeVisibleRange` (Dict; optional): Visible time range (dates); read-only
 - `timeScaleHeight` (Real; optional): Height of time scale; read-only
 - `timeScaleWidth` (Real; optional): Width of time scale; read-only
 - `width` (String | Real; optional): Sets width of the parent div of the chart

@@ -35,7 +35,7 @@ See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOp
 
 \item{fullPriceScaleOptions}{Named list. Full chart price scale options including defaults; read-only}
 
-\item{fullSeriesOptions}{List of named lists. Full series options including defaults; read-only}
+\item{fullSeriesOptions}{Named list. Full series options including defaults; read-only}
 
 \item{fullTimeScaleOptions}{Named list. Full time scale options including defaults; read-only}
 
@@ -53,9 +53,9 @@ See https://tradingview.github.io/lightweight-charts/docs/api/interfaces/ChartOp
 
 \item{seriesTypes}{List of a value equal to: 'bar', 'candlestick', 'area', 'baseline', 'line', 'histogram's. Type of the series}
 
-\item{timeRangeVisibleLogicalRange}{Named list. Visible logical range; read-only}
+\item{timeRangeVisibleLogicalRange}{Named list. Visible logical range (bar numbers); read-only}
 
-\item{timeRangeVisibleRange}{Named list. Visible time range; read-only}
+\item{timeRangeVisibleRange}{Named list. Visible time range (dates); read-only}
 
 \item{timeScaleHeight}{Numeric. Height of time scale; read-only}
 

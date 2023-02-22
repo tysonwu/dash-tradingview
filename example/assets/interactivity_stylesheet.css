@@ -4,11 +4,12 @@ h2 {
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr;
     gap: 10px;
     grid-template-areas:
-        "one two"
+        "one two three"
     }
     .container.one { grid-area: one;}
     .container.two { grid-area: two;}
+    .container.three { grid-area: three;}
