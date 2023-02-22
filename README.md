@@ -4,6 +4,20 @@
 
 Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts) written in Typescript/Javascript, and renders it for use in Python [Dash](https://dash.plotly.com/) apps.
 
+## Releases
+
+| Date        | Tag|
+| ----------- | ------ |
+| 23 Feb 2023 | v0.1.0 |
+
+## Installation
+
+This package is available in PyPI:
+
+```
+pip install dash_tvlwc
+```
+
 ## Demo
 
 ### Chart and series style options
@@ -75,15 +89,6 @@ The Tradingview Lightweight Chart library is highly customizable in style. For t
 - `timeScaleWidth`: width of time scale.
 - `timeScaleHeight`: height of time scale.
 - `fullTimeScaleOptions`: full dict of applied time scale options including default options.
-
-
-## Installation
-
-This package is available in PyPI:
-
-```
-pip install dash_tvlwc
-```
 
 ## Contributing
 
