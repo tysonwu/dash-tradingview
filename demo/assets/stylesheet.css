@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+sans');
+@import url('https://fonts.googleapis.com/css?family=Inter');
+
+body {
+    font-family: 'Fira Sans', monospace;
+    font-size: small;
+    background-color: #1B2631;
+    color: #dddddd;
+}
+
+h1 {
+    text-align: center;
+}
+
+#chart-info > span {
+    font-family: 'Inter', sans-serif;
+    display: block;
+}
+
+a:link {
+    color: #d27117;
+}
+
+a:visited {
+    color: #deac17;
+}
+
+a:hover {
+    color: #fff389;
+}
+
+.main-container {
+    margin-bottom: 30px;
+    padding: 25px 50px;
+    border: 1px solid #dddddd;
+    box-shadow: 15px 15px #131b23;
+}
+
+.container {
+    width: 70vw;
+    height: 80vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10vh;
+}
+
+#tv-chart-1 {
+    border: 1px dashed #dddddd;
+    box-shadow: 15px 15px #131b23;
+    z-index: 9;
+}
+
+button {
+    border: None;
+    color: #dddddd;
+    background-color: #ffffff05;
+    font-family: 'Fira Sans', monospace;
+    border: 1px solid #dddddd;
+    box-shadow: 10px 10px #131b23;
+    margin-bottom: 10px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ffffff20;
+}
+
+button:active {
+    background-color: #00000005;
+}
