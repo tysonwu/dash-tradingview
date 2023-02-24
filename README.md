@@ -1,12 +1,15 @@
 <div style="text-align: center">
 <h1>🎛 Dash Tradingview Lightweight Charts Component 📊</h1>
+
+[Source Code](https://github.com/tysonwu/dash-tradingview) | [Documentation]() | [Demo]()
+
 </div>
 
-Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts) written in Typescript/Javascript, and renders it for use in Python [Dash](https://dash.plotly.com/) apps.
+Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps [TradingView's Lightweight Charts](https://github.com/tradingview/lightweight-charts), the popular financial charting library written in Javascript, and extends it for use in Python [Dash](https://dash.plotly.com/) webapp.
 
 ## Releases
 
-| Date        | Tag|
+| Date        | Tag    |
 | ----------- | ------ |
 | 23 Feb 2023 | v0.1.1 |
 
@@ -20,15 +23,19 @@ pip install dash_tvlwc
 
 ## Demo
 
+### Interactive demo
+
+An interactive demo hosted and available [here]().
+
 ### Chart and series style options
 - 1-to-1 chart and series option capability as in original lightweight chart
 - See `./example/options.py`
-![Options](./docs/options.png "Options")
+![Options](./docs/_static/options.png "Options")
 
 ### Interactivity with [Dash callbacks](https://dash.plotly.com/basic-callbacks)
 - Modify data or styles on any triggers
 - See `./example/interactivity.py`
-![Interactivity](./docs/interactivity.gif "Interactivity")
+![Interactivity](./docs/_static/interactivity.gif "Interactivity")
 
 ### Minimal example
 ```python
