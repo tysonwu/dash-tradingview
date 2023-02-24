@@ -17,6 +17,30 @@ h1 {
     display: block;
 }
 
+.options-container {
+    width: 100%;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px;
+    grid-template-areas:
+        "one two"
+        "three four"
+        "five six"
+    }
+    .options-container.one { grid-area: one;}
+    .options-container.two { grid-area: two;}
+    .options-container.three { grid-area: three;}
+    .options-container.four { grid-area: four;}
+    .options-container.five { grid-area: five;}
+    .options-container.six { grid-area: six;}
+
+.options-container > div {
+    border: 1px solid #dddddd;
+    box-shadow: 15px 15px #131b23;
+}
+
 a:link {
     color: #d27117;
 }
@@ -58,6 +82,7 @@ button {
     border: 1px solid #dddddd;
     box-shadow: 10px 10px #131b23;
     margin-bottom: 10px;
+    margin-right: 20px;
     padding: 20px;
     cursor: pointer;
 }
