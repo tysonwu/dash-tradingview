@@ -1,4 +1,3 @@
-from datetime import datetime
 import random
 
 import pandas as pd

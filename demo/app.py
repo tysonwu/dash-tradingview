@@ -40,7 +40,7 @@ main_panel = [
         ], style={'position': 'absolute', 'left': 0, 'top': 0, 'zIndex': 10, 'color': 'white', 'padding': '10px'})
     ]),
     html.Div(children=[
-        html.Button('Get a line chart', id='change-chart-type'),
+        html.Button('Candlestick / Line chart', id='change-chart-type'),
         html.Button('Change theme', id='change-theme'),
     ], style={'display': 'block'})
 ]
