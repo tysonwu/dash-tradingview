@@ -93,7 +93,7 @@ if __name__ == '__main__':
     app.run_server()
 ```
 
-4. Run the app by `python app2.py`. The app should be running on `localhost:8050/`. You should see the plot:
+4. Run the app by `python minimal_example.py`. The app should be running on `localhost:8050/`. You should see the plot:
 
 ![Minimal example](./docs/_static/minimal_example.png "Minimal example")
 
@@ -103,26 +103,31 @@ The Tradingview Lightweight Chart library is highly customizable in style. For t
 
 **Configurable props**
 
-- `id`: identifiable ID for the chart.
-- `chartOptions`: a dict of options on chart canvas.
-- `seriesData`: a list series of list of timepoint dicts on series data.
-- `seriesTypes`: a list of series types, in the same order as `seriesData`.
-- `seriesOptions`: a list of series option dict for each series, in the same order as `seriesData`.
-- `seriesMarkers`: a list of list of markers dicts for each series, in the same order as `seriesData`.
-- `seriesPriceLines`: a list of list of price line dicts for each series, in the same order as `seriesData`.
-- `width`: width of outer container of the chart.
-- `height`: height of outer container of the chart.
+|Property |Description  |
+|---|---|
+|`chartOptions`|a dict of options on chart canvas.|
+|`seriesData`|a list series of list of timepoint dicts on series data.|
+|`seriesTypes`|a list of series types, in the same order as `seriesData`.|
+|`seriesOptions`|a list of series option dict for each series, in the same order as `seriesData`.|
+|`seriesMarkers`|a list of list of markers dicts for each series, in the same order as `seriesData`.|
+|`seriesPriceLines`|a list of list of price line dicts for each series, in the same order as `seriesData`.|
+|`width`|width of outer container of the chart.|
+|`height`|height of outer container of the chart.|
 
 **Read-only props**
-- `crosshair`: position of last mouse hover on chart (crosshair coordinates).
-- `click`: position of last mouse click on chart (click coordinates).
-- `fullChartOptions`: full dict of applied chart options including default options.
-- `fullPriceScaleOptions`: full dict of applied series options including default options.
-- `timeRangeVisibleRange`: from-to dates of visible time range.
-- `timeRangeVisibleLogicalRange` from-to numbers of visible time range.
-- `timeScaleWidth`: width of time scale.
-- `timeScaleHeight`: height of time scale.
-- `fullTimeScaleOptions`: full dict of applied time scale options including default options.
+
+|Property |Description  |
+|---|---|
+|`id`|identifiable ID for the chart.|
+|`crosshair`|position of last mouse hover on chart (crosshair coordinates).|
+|`click`|position of last mouse click on chart (click coordinates).|
+|`fullChartOptions`|full dict of applied chart options including default options.|
+|`fullPriceScaleOptions`|full dict of applied series options including default options.|
+|`timeRangeVisibleRange`|from-to dates of visible time range.|
+|`timeRangeVisibleLogicalRange`|from-to numbers of visible time range.|
+|`timeScaleWidth`|width of time scale.|
+|`timeScaleHeight`|height of time scale.|
+|`fullTimeScaleOptions`|full dict of applied time scale options including default options.|
 
 ## Contributing
 
