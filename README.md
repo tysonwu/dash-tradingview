@@ -1,7 +1,7 @@
 <div style="text-align: center">
 <h1>🎛 Dash Tradingview Lightweight Charts Component 📊</h1>
 
-[Source Code](https://github.com/tysonwu/dash-tradingview) | [Documentation](https://dash-tradingview.readthedocs.io/) | [Demo](http://tysonwu.pythonanywhere.com/)
+[Source Code](https://github.com/tysonwu/dash-tradingview) | [Documentation](https://dash-tradingview.readthedocs.io/) | [Live Demo](http://tysonwu.pythonanywhere.com/)
 
 </div>
 
