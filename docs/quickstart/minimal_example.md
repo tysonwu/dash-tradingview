@@ -1,6 +1,6 @@
-# Quickstart
+# Minimal example
 
-## Minimal example
+This example shows the most simple way to put up a chart using dash_tvlwc.
 
 1. Import dependencies
 ```python
@@ -9,7 +9,7 @@ from dash import html
 import dash_tvlwc
 ```
 
-1. Make some random candlestick data and line plot data
+2. Make some random candlestick data and line plot data
 ```python
 candlestick_data = [
     {'close': 97.56, 'high': 101.29, 'low': 95.07, 'open': 100, 'time': '2021-01-01'},
@@ -54,4 +54,4 @@ if __name__ == '__main__':
 
 4. Run the app by `python app2.py`. The app should be running on `localhost:8050/`. You should see the plot:
 
-![Minimal example](./_static/minimal_example.png "Minimal example")
+![Minimal example](./../_static/minimal_example.png "Minimal example")

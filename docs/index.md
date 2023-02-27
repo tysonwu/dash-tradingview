@@ -3,7 +3,7 @@
 ```{toctree}
 :hidden:
 
-quickstart
+quickstart/index
 reference
 ```
 
