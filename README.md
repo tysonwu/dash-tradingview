@@ -25,7 +25,7 @@ pip install dash_tvlwc
 
 ### Interactive demo
 
-An interactive demo hosted and available [here](http://tysonwu.pythonanywhere.com/).
+An interactive demo hosted and available [here](http://tysonwu.pythonanywhere.com/). The source code of this live demo can be found at `./demo/app.py`.
 
 >> The demo hosting on pythonanywhere somehow suffers from very slow callbacks. Fixing this soon.
 
@@ -40,6 +40,8 @@ An interactive demo hosted and available [here](http://tysonwu.pythonanywhere.co
 ![Interactivity](./docs/_static/interactivity.gif "Interactivity")
 
 ### Minimal example
+
+The source code of this minimal example can be found at `./demo/minimal_example.py`.
 
 1. Import dependencies
 ```python
@@ -97,7 +99,7 @@ if __name__ == '__main__':
 
 ## References: Chart properties
 
-The Tradingview Lightweight Chart library is highly customizable in style. For the complete list of chart options and series options available, please refer to [the official API document](https://tradingview.github.io/lightweight-charts/docs/api).
+The Tradingview Lightweight Chart library is highly customizable in style. For the complete list of chart options and series options available, please refer to [the official API documentation](https://tradingview.github.io/lightweight-charts/docs/3.8).
 
 **Configurable props**
 
