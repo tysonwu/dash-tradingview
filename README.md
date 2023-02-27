@@ -27,7 +27,7 @@ pip install dash_tvlwc
 
 An interactive demo hosted and available [here](http://tysonwu.pythonanywhere.com/).
 
-> The demo hosting on pythonanywhere somehow suffers from very slow callbacks. Fixing this soon.
+>> The demo hosting on pythonanywhere somehow suffers from very slow callbacks. Fixing this soon.
 
 ### Chart and series style options
 - 1-to-1 chart and series option capability as in original lightweight chart
