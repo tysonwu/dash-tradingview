@@ -16,9 +16,21 @@ setup(
     include_package_data=True,
     license=package['license'],
     description=package.get('description', package_name),
-    install_requires=[],
-    classifiers = [
+    install_requires=['dash>=3.0.0'],
+    python_requires='>=3.9',
+    classifiers=[
         'Framework :: Dash',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'License :: OSI Approved :: MIT License',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Financial and Insurance Industry',
+        'Topic :: Office/Business :: Financial :: Investment',
+        'Topic :: Scientific/Engineering :: Visualization',
     ],
     long_description='''
     # 🎛 Dash Tradingview Lightweight Charts Component 📊

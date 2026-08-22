@@ -1,10 +1,12 @@
 include dash_tvlwc/dash_tvlwc.min.js
+include dash_tvlwc/dash_tvlwc.min.js.LICENSE.txt
 include dash_tvlwc/dash_tvlwc.min.js.map
 include dash_tvlwc/async-*.js
 include dash_tvlwc/async-*.js.map
 include dash_tvlwc/*-shared.js
 include dash_tvlwc/*-shared.js.map
 include dash_tvlwc/metadata.json
+include dash_tvlwc/proptypes.js
 include dash_tvlwc/package-info.json
 include README.md
 include LICENSE

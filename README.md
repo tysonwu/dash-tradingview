@@ -135,30 +135,96 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Development
 
-1. Install Dash and its dependencies: https://dash.plotly.com/installation
-2. Run demonstration script with `python example/usage.py`
-3. Visit the demo Dash app at http://localhost:8050 in your web browser
+### Requirements
 
-### Install dependencies
+- Node.js 18 or newer, npm 9 or newer
+- Python 3.9 or newer
 
-If you have selected install_dependencies during the prompt, you can skip this part.
+### Verified compatibility
 
-1. Install npm packages
+| Dash   | React  | Status                                  |
+| ------ | ------ | --------------------------------------- |
+| 4.4.1  | 18.3.1 | Works                                   |
+| 3.4.0  | 18.3.1 | Works                                   |
+| 3.0.0  | 18.3.1 | Works                                   |
+| 2.18.2 | 16.14  | Works, but below the declared floor      |
+
+The package declares `dash>=3.0.0`. Dash 3.0.0 and 2.18.2 need Python 3.13 or older, as they call `pkgutil.find_loader`, which was removed in Python 3.14.
+
+### Set up
+
+Run all commands from the repository root.
+
+1. Install npm packages.
     ```
     $ npm install
     ```
-2. Create a virtual env and activate.
+2. Create a virtual environment and activate it.
     ```
-    $ virtualenv venv
+    $ python -m venv venv
     $ . venv/bin/activate
     ```
-    _Note: venv\Scripts\activate for windows_
+    _Note: `venv\Scripts\activate` on Windows._
 
-3. Install python packages required to build components.
+3. Install the Python packages required to build the component.
     ```
     $ pip install -r requirements.txt
     ```
-4. Install the python packages for testing (optional)
-    ```
-    $ pip install -r tests/requirements.txt
-    ```
+
+### Build
+
+```
+$ npm run build
+```
+
+This runs two stages, which can also be run separately:
+
+- `npm run build:js` bundles `src/lib` into `dash_tvlwc/dash_tvlwc.min.js` with webpack.
+- `npm run build:backends` generates the Python, R, and Julia classes from `src/lib/components/Tvlwc.tsx`. The virtual environment must be active so that `dash-generate-components` is on `PATH`.
+
+`npm run typecheck` runs `tsc --noEmit` over the TypeScript sources without producing a bundle.
+
+### Try the component in a Dash app
+
+The component currently accepts `id`, `chartOptions`, `width`, and `height`. Series props are not yet wired up, so the chart renders as an empty pane with axes and no data.
+
+Save the following as `app.py` in the repository root, so that `import dash_tvlwc` picks up your local build rather than an installed copy:
+
+```python
+import dash
+from dash import html
+import dash_tvlwc
+
+app = dash.Dash(__name__)
+app.layout = html.Div([
+    dash_tvlwc.Tvlwc(
+        id='chart',
+        width='100%',
+        height=400,
+        chartOptions={
+            'layout': {
+                'background': {'type': 'solid', 'color': '#ffffff'},
+                'textColor': '#333333',
+            },
+            'timeScale': {'timeVisible': True},
+        },
+    ),
+])
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+Run it with `python app.py` and visit http://localhost:8050. With `debug=True`, prop types are validated in the browser and any mismatch is reported in the console.
+
+### Try the component without Dash
+
+```
+$ npm start
+```
+
+This serves `src/demo` through webpack-dev-server at http://localhost:8080 and renders `Tvlwc.tsx` directly in React. It rebuilds on save and does not require the Python bindings, which makes it the faster loop when working on the component itself.
+
+### Bundled examples
+
+The apps under `demo/` and `example/` target the earlier prop schema and raise `TypeError: ... received an unexpected keyword argument: 'seriesTypes'` against the current component. They are kept as references and are updated as the series props are reintroduced.

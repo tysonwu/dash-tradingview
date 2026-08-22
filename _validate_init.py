@@ -28,15 +28,19 @@ def check_dist(dist, filename):
     if filename.endswith('dev.js'):
         return True
 
-    return any(
-        filename in x
-        for d in dist
-        for x in (
-            [d.get('relative_package_path')]
-            if not isinstance(d.get('relative_package_path'), list)
-            else d.get('relative_package_path')
-        )
-    )
+    # Regular bundles declare `relative_package_path`; assets served only when
+    # dev tools are enabled, such as the TypeScript runtime prop types, declare
+    # `dev_package_path`. Either one counts as declared, and entries carrying
+    # neither are skipped rather than raising.
+    paths = []
+    for d in dist:
+        for key in ('relative_package_path', 'dev_package_path'):
+            value = d.get(key)
+            if value is None:
+                continue
+            paths.extend(value if isinstance(value, list) else [value])
+
+    return any(filename in path for path in paths)
 
 
 def check_manifest(filename):

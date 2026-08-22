@@ -81,6 +81,14 @@ _js_dist.extend(
     ]
 )
 
+# Runtime prop-type validation for the TypeScript component, served only when
+# the app runs with dev tools enabled.
+_js_dist.append(dict(
+    dev_package_path="proptypes.js",
+    dev_only=True,
+    namespace="dash_tvlwc"
+))
+
 _css_dist = []
 
 
