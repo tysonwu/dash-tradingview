@@ -1,175 +1,188 @@
+"""Chart options and series options, one panel per series type.
+
+Run from the repository root:
+
+    python example/options.py
+"""
 import random
 
+from dash import Dash, html
+
 import dash_tvlwc
-import dash
-from dash.dependencies import Input, Output, State
-from dash import html
+import theme
+from data_generator import generate_random_ohlc, generate_random_series
+from theme import CHART_OPTIONS, merge
 
-from example.data_generator import generate_random_ohlc, generate_random_series
 
-app = dash.Dash(__name__, external_stylesheets=['./assets/stylesheet.css'])
-
-chart_options = {
-    'layout': {
-        'background': {'type': 'solid', 'color': '#1B2631'},
-        'textColor': 'white',
-    },
-    'grid': {
-        'vertLines': {'visible': False},
-        'horzLines': {'visible': False},
-    },
-    'localization': {'locale': 'en-US'}
-}
-
-panel1 = [
-    html.H2('Bar'),
-    dash_tvlwc.Tvlwc(
-        id='bar-chart',
-        seriesData=[generate_random_ohlc(v0=100, n=50)],
-        seriesTypes=['bar'],
+def chart(component_id, series, options=None, height=240):
+    return dash_tvlwc.Tvlwc(
+        id=component_id,
+        series=series,
         width='100%',
-        chartOptions=chart_options
+        height=height,
+        chartOptions=merge(CHART_OPTIONS, options or {}),
     )
-]
 
 
-p2_series = generate_random_ohlc(v0=1, n=50, ret=0.1)
-p2_series = [{'time': v['time']} if 12 < idx < 20 or idx > 45 else v for idx, v in enumerate(p2_series)]
-panel2 = [
-    html.H2('Candlestick'),
-    dash_tvlwc.Tvlwc(
-        id='candlestick-chart',
-        seriesData=[p2_series],
-        seriesTypes=['candlestick'],
-        seriesOptions=[{
-            'downColor': '#a6269a',
-            'upColor': '#ffaa30',
-            'borderColor': 'black',
-            'wickColor': 'black'
+# Every series carries its own id, type, data and options. The id is what keys
+# the `crosshair`, `click` and `fullSeriesOptions` payloads.
+bar = theme.panel(
+    'Bar', 'series[].type = bar',
+    chart('bar-chart', [{
+        'id': 'price',
+        'type': 'bar',
+        'data': generate_random_ohlc(v0=100, n=50),
+        'options': {'upColor': theme.GREEN, 'downColor': theme.RED,
+                    'thinBars': False},
+    }]),
+)
+
+
+# Data points carrying only `time` are whitespace: they reserve the slot and
+# render as a gap. Do not use None values for this.
+candles = generate_random_ohlc(v0=1, n=50, ret=0.1)
+candles = [{'time': p['time']} if 12 < i < 20 or i > 45 else p
+           for i, p in enumerate(candles)]
+
+candlestick = theme.panel(
+    'Candlestick', 'whitespace points -> gaps',
+    chart('candlestick-chart', [{
+        'id': 'price',
+        'type': 'candlestick',
+        'data': candles,
+        'options': {
+            'upColor': theme.ORANGE,
+            'downColor': theme.PURPLE,
+            'borderVisible': False,
+            'wickUpColor': theme.ORANGE,
+            'wickDownColor': theme.PURPLE,
+        },
+    }]),
+)
+
+
+# `priceFormatter` must be a JavaScript function, which cannot cross the Python
+# boundary. Name a function registered in assets/tvlwc_functions.js instead.
+area = theme.panel(
+    'Area', "localization.priceFormatter = 'usd'",
+    chart('area-chart', [{
+        'id': 'price',
+        'type': 'area',
+        'data': generate_random_series(v0=15, n=50),
+        'options': {
+            'lineColor': theme.BLUE,
+            'lineWidth': 2,
+            'topColor': 'rgba(10, 132, 255, 0.35)',
+            'bottomColor': 'rgba(10, 132, 255, 0.02)',
+            'priceLineColor': theme.BORDER,
+        },
+    }], {'localization': {'priceFormatter': 'usd'}}),
+)
+
+
+baseline_data = generate_random_series(v0=5000, n=50)
+baseline_mean = sum(p['value'] for p in baseline_data) / len(baseline_data)
+baseline_max = max(p['value'] for p in baseline_data)
+
+# Colour here is semantic: above and below the baseline are different states.
+baseline = theme.panel(
+    'Baseline', "priceScaleId = 'left'",
+    chart('baseline-chart', [{
+        'id': 'price',
+        'type': 'baseline',
+        'data': baseline_data,
+        'options': {
+            'baseValue': {'type': 'price', 'price': baseline_mean},
+            'topLineColor': theme.GREEN,
+            'topFillColor1': 'rgba(48, 209, 88, 0.28)',
+            'topFillColor2': 'rgba(48, 209, 88, 0.02)',
+            'bottomLineColor': theme.RED,
+            'bottomFillColor1': 'rgba(255, 69, 58, 0.02)',
+            'bottomFillColor2': 'rgba(255, 69, 58, 0.28)',
+            'lineWidth': 2,
+            'priceScaleId': 'left',
+        },
+        'priceLines': [{
+            'price': baseline_max, 'color': theme.BORDER, 'lineStyle': 2,
+            'title': 'MAX', 'axisLabelVisible': True,
         }],
-        width='100%',
-        chartOptions={'layout': {'background': {'type': 'solid', 'color': 'white'}}}
-    )
-]
+    }], {
+        'rightPriceScale': {'visible': False},
+        'leftPriceScale': {'visible': True, 'borderColor': theme.BORDER},
+        'timeScale': {'visible': False},
+    }),
+)
 
 
-panel3 = [
-    html.H2('Area'),
-    dash_tvlwc.Tvlwc(
-        id='area-chart',
-        seriesData=[generate_random_series(v0=15, n=50)],
-        seriesTypes=['area'],
-        seriesOptions=[{
-            'lineColor': '#FFAA30',
-            'topColor': '#2962FF',
-            'bottomColor': 'rgba(180, 98, 200, 0.1)',
-            'priceLineWidth': 3,
-            'priceLineColor': 'red'
-        }],
-        width='100%',
-        chartOptions=chart_options
-    )
-]
+line_data = generate_random_series(v0=1, n=50, ret=0.1)
+volume_data = generate_random_series(v0=100, n=50, ret=0.05)
+for point in volume_data:
+    # Per-point `color` overrides the series colour. Do not add a second series
+    # or use markers to recolour bars.
+    point['color'] = random.choice(['rgba(48, 209, 88, 0.55)',
+                                    'rgba(255, 69, 58, 0.55)'])
 
-
-p4_series = generate_random_series(v0=5000, n=50)
-p4_mean = sum([p['value'] for p in p4_series]) / 50
-p4_max = max([p['value'] for p in p4_series])
-price_lines = [{'price': p4_max, 'color': '#2962FF', 'lineStyle': 0, 'title': 'MAX PRICE', 'axisLabelVisible': True}]
-panel4 = [
-    html.H2('Baseline'),
-    dash_tvlwc.Tvlwc(
-        id='baseline-chart',
-        seriesData=[p4_series],
-        seriesTypes=['baseline'],
-        seriesOptions=[{
-            'baseValue': {'type': 'price', 'price': p4_mean},
-            'topFillColor1': 'black',
-            'topFillColor2': 'rgba(255,255,255,0)',
-            'topLineColor': 'black',
-            'crosshairMarkerRadius': 8,
-            'lineWidth': 5,
-            'priceScaleId': 'left'
-        }],
-        seriesPriceLines=[price_lines],
-        width='100%',
-        chartOptions={
-            'rightPriceScale': {'visible': False},
-            'leftPriceScale': {'visible': True, 'borderColor': 'rgba(197, 203, 206, 1)',},
-            'timeScale': {'visible': False},
-            'grid': {'vertLines': {'visible': False}, 'horzLines': {'style': 0, 'color': 'black'}},
-        }
-    )
-]
-
-
-# add markers and add color to volume bar
-p5_series = generate_random_series(v0=1, n=50, ret=0.1)
-markers = [
-    {'time': p5_series[15]['time'], 'position': 'aboveBar', 'color': '#f68410', 'shape': 'circle', 'text': 'Signal'},
-    {'time': p5_series[20]['time'], 'position': 'belowBar', 'color': 'white', 'shape': 'arrowUp', 'text': 'Buy'}
-]
-p5_series_volume = generate_random_series(v0=100, n=50, ret=0.05)
-for i in p5_series_volume:
-    i['color'] = random.choice(['rgba(0, 150, 136, 0.8)', 'rgba(255,82,82, 0.8)'])
-
-panel5 = [
-    html.H2('Line and volume'),
-    dash_tvlwc.Tvlwc(
-        id='line-chart',
-        seriesData=[p5_series, p5_series_volume],
-        seriesTypes=['line', 'histogram'],
-        seriesOptions=[
-            {
-                'lineWidth': 1
-            },
-            {
-                'color': '#26a69a',
+line_and_volume = theme.panel(
+    'Line and volume', 'priceScaleOptions.scaleMargins',
+    chart('line-chart', [
+        {
+            'id': 'price',
+            'type': 'line',
+            'data': line_data,
+            'options': {'lineWidth': 2, 'color': theme.CYAN},
+            'markers': [
+                {'time': line_data[15]['time'], 'position': 'aboveBar',
+                 'color': theme.ORANGE, 'shape': 'circle', 'text': 'Signal'},
+                {'time': line_data[20]['time'], 'position': 'belowBar',
+                 'color': theme.GREEN, 'shape': 'arrowUp', 'text': 'Buy'},
+            ],
+        },
+        {
+            'id': 'volume',
+            'type': 'histogram',
+            'data': volume_data,
+            'options': {
                 'priceFormat': {'type': 'volume'},
                 'priceScaleId': '',
-                'scaleMargins': {'top': 0.9, 'bottom': 0},
-                'priceLineVisible': False
+                'priceLineVisible': False,
+                'lastValueVisible': False,
             },
-        ],
-        seriesMarkers=[markers],
-        width='100%',
-        chartOptions=chart_options
-    )
-]
+            # `scaleMargins` belongs to the price scale, not to the series.
+            # Squeeze the volume into the bottom tenth of the pane.
+            'priceScaleOptions': {'scaleMargins': {'top': 0.9, 'bottom': 0}},
+        },
+    ]),
+)
 
 
-p6_series = generate_random_series(v0=100, n=50, ret=0.3)
-for idx, _ in enumerate(p6_series):
-    if idx in [5,12,13,14,20,33,34,46]:
-        p6_series[idx]['color'] = 'white'
+histogram_data = generate_random_series(v0=100, n=50, ret=0.3)
+for i in (5, 12, 13, 14, 20, 33, 34, 46):
+    histogram_data[i]['color'] = theme.MINT
 
-panel6 = [
-    html.H2('Histogram'),
-    dash_tvlwc.Tvlwc(
-        id='histogram-chart',
-        seriesData=[p6_series],
-        seriesTypes=['histogram'],
-        seriesOptions=[{
-            'color': '#ff80cc',
+histogram = theme.panel(
+    'Histogram', 'per-point color, base = 100',
+    chart('histogram-chart', [{
+        'id': 'value',
+        'type': 'histogram',
+        'data': histogram_data,
+        'options': {
+            'color': theme.PURPLE,
             'base': 100,
             'priceLineVisible': False,
-            'lastValueVisible': False
-        }],
-        width='100%',
-        chartOptions={'layout': {'textColor': '#ff80cc', 'background': {'type': 'solid', 'color': 'black'}}}
-    )
-]
+            'lastValueVisible': False,
+        },
+    }]),
+)
 
+app = Dash(__name__, external_stylesheets=[theme.FONTS])
 app.layout = html.Div([
-    html.H1('Chart options and series options'),
-    html.Div(className='container', children=[
-        html.Div(className='one', children=panel1),
-        html.Div(className='two', children=panel2),
-        html.Div(className='three', children=panel3),
-        html.Div(className='four', children=panel4),
-        html.Div(className='five', children=panel5),
-        html.Div(className='six', children=panel6),
-    ])
+    theme.topbar('Chart and series options',
+                 'lightweight-charts 5.2.1 · dash-tvlwc 0.2.0-dev'),
+    html.Main(className='shell', children=[
+        html.Div(className='panel-grid options-grid', children=[
+            bar, candlestick, area, baseline, line_and_volume, histogram,
+        ]),
+    ]),
 ])
 
 if __name__ == '__main__':

@@ -1,342 +1,321 @@
+"""Hosted showcase for dash-tvlwc.
+
+Run from the repository root:
+
+    PYTHONPATH=. python demo/app.py
+"""
+import copy
 import random
-from datetime import datetime, timedelta
+from datetime import date, timedelta
+
+import dash
+from dash import Input, Output, State, callback, ctx, dcc, html
 
 import dash_tvlwc
-import dash
-from dash.dependencies import Input, Output, State
-from dash import html, dcc, ctx
-
-from dash_tvlwc.types import ColorType, SeriesType
+import theme
 from data_generator import generate_random_ohlc, generate_random_series
+from theme import CHART_OPTIONS, merge
+
+# The hero chart names a formatter registered in assets/tvlwc_functions.js.
+# Options that must be JavaScript functions cannot cross the Python boundary.
+HERO_OPTIONS = merge(CHART_OPTIONS, {'localization': {'priceFormatter': 'usd'}})
+
+# Two console layers rather than a decorative colour, so the theme toggle stays
+# inside the palette.
+LAYERS = [theme.CARD, theme.ACCENT]
 
 
-main_panel = [
-    html.Div(style={'position': 'relative', 'width': '100%', 'height': '100%', 'marginBottom': '30px'}, children=[
-        html.Div(children=[
-            dash_tvlwc.Tvlwc(
-                id='tv-chart-1',
-                seriesData=[generate_random_ohlc(100, n=100)],
-                seriesTypes=[SeriesType.Candlestick],
-                width='99%',
-                chartOptions={
-                    'layout': {
-                        'background': {'type': ColorType.Solid, 'color': '#1B2631'},
-                        'textColor': 'white',
-                    },
-                    'grid': {
-                        'vertLines': {'visible': True, 'color': 'rgba(255,255,255,0.1)'},
-                        'horzLines': {'visible': True, 'color': 'rgba(255,255,255,0.1)'},
-                    },
-                    'localization': {
-                        'locale': 'en-US',
-                        'priceFormatter': "(function(price) { return '$' + price.toFixed(2); })"
-                    }
-                },
-            ),
-        ], style={'width': '100%', 'height': '100%', 'left': 0, 'top': 0}),
-        html.Div(id='chart-info', children=[
-            html.Span(id='chart-price', style={'fontSize': '60px', 'fontWeight': 'bold'}),
-            html.Span(id='chart-date', style={'fontSize': 'small'}),
-        ], style={'position': 'absolute', 'left': 0, 'top': 0, 'zIndex': 10, 'color': 'white', 'padding': '10px'})
+def chart(component_id, series, options=None, height=240, **kwargs):
+    return dash_tvlwc.Tvlwc(
+        id=component_id,
+        series=series,
+        width='100%',
+        height=height,
+        chartOptions=merge(CHART_OPTIONS, options or {}),
+        **kwargs,
+    )
+
+
+hero = theme.panel(
+    'Live chart', 'series rewritten every 500 ms',
+    html.Div(className='hero', children=[
+        html.Div(className='hero-readout', children=[
+            html.Span(id='chart-price', className='hero-price'),
+            html.Span(id='chart-date', className='hero-date'),
+        ]),
+        dash_tvlwc.Tvlwc(
+            id='tv-chart-1',
+            series=[{
+                'id': 'main',
+                'type': 'candlestick',
+                'data': generate_random_ohlc(100, n=200),
+                'options': {'upColor': theme.GREEN, 'downColor': theme.RED,
+                            'borderVisible': False,
+                            'wickUpColor': theme.GREEN, 'wickDownColor': theme.RED},
+            }],
+            width='100%',
+            height=320,
+            chartOptions=HERO_OPTIONS,
+            # Crosshair reporting is a server round trip per report, so it is off
+            # unless asked for. `reportThrottle` coalesces; zero batches to one
+            # report per animation frame.
+            subscribeCrosshair=True,
+            reportThrottle=50,
+        ),
     ]),
-    html.Div(children=[
-        html.Button('Candlestick / Line chart', id='change-chart-type'),
-        html.Button('Change theme', id='change-theme'),
-    ], style={'display': 'block'})
-]
+    theme.toolbar(
+        theme.button('Candlestick / Line', 'change-chart-type'),
+        theme.button('Switch layer', 'change-theme'),
+    ),
+)
 
 
-chart_options = {
-    'layout': {
-        'background': {'type': 'solid', 'color': '#1B2631'},
-        'textColor': 'white',
-    },
-    'grid': {
-        'vertLines': {'visible': False},
-        'horzLines': {'visible': False},
-    },
-    'localization': {'locale': 'en-US'}
-}
-
-panel1 = [
-    dash_tvlwc.Tvlwc(
-        id='bar-chart',
-        seriesData=[generate_random_ohlc(v0=100, n=50)],
-        seriesTypes=['bar'],
-        width='100%',
-        chartOptions=chart_options
-    )
-]
+bar = theme.panel(
+    'Bar', 'series[].type = bar',
+    chart('bar-chart', [{
+        'id': 'price',
+        'type': 'bar',
+        'data': generate_random_ohlc(v0=100, n=50),
+        'options': {'upColor': theme.GREEN, 'downColor': theme.RED,
+                    'thinBars': False},
+    }]),
+)
 
 
-p2_series = generate_random_ohlc(v0=1, n=50, ret=0.1)
-p2_series = [{'time': v['time']} if 12 < idx < 20 or idx > 45 else v for idx, v in enumerate(p2_series)]
-panel2 = [
-    dash_tvlwc.Tvlwc(
-        id='candlestick-chart',
-        seriesData=[p2_series],
-        seriesTypes=['candlestick'],
-        seriesOptions=[{
-            'downColor': '#a6269a',
-            'upColor': '#ffaa30',
-            'borderColor': 'black',
-            'wickColor': 'black'
+# Data points carrying only `time` are whitespace: they reserve the slot and
+# render as a gap. Do not use None values for this.
+candles = generate_random_ohlc(v0=1, n=50, ret=0.1)
+candles = [{'time': p['time']} if 12 < i < 20 or i > 45 else p
+           for i, p in enumerate(candles)]
+
+candlestick = theme.panel(
+    'Candlestick', 'whitespace points -> gaps',
+    chart('candlestick-chart', [{
+        'id': 'price',
+        'type': 'candlestick',
+        'data': candles,
+        'options': {
+            'upColor': theme.ORANGE,
+            'downColor': theme.PURPLE,
+            'borderVisible': False,
+            'wickUpColor': theme.ORANGE,
+            'wickDownColor': theme.PURPLE,
+        },
+    }]),
+)
+
+
+area = theme.panel(
+    'Area', "localization.priceFormatter = 'usd'",
+    chart('area-chart', [{
+        'id': 'price',
+        'type': 'area',
+        'data': generate_random_series(v0=15, n=50),
+        'options': {
+            'lineColor': theme.BLUE,
+            'lineWidth': 2,
+            'topColor': 'rgba(10, 132, 255, 0.35)',
+            'bottomColor': 'rgba(10, 132, 255, 0.02)',
+            'priceLineColor': theme.BORDER,
+        },
+    }], {'localization': {'priceFormatter': 'usd'}}),
+)
+
+
+baseline_data = generate_random_series(v0=5000, n=50)
+baseline_mean = sum(p['value'] for p in baseline_data) / len(baseline_data)
+baseline_max = max(p['value'] for p in baseline_data)
+
+# Colour here is semantic: above and below the baseline are different states.
+baseline = theme.panel(
+    'Baseline', "priceScaleId = 'left'",
+    chart('baseline-chart', [{
+        'id': 'price',
+        'type': 'baseline',
+        'data': baseline_data,
+        'options': {
+            'baseValue': {'type': 'price', 'price': baseline_mean},
+            'topLineColor': theme.GREEN,
+            'topFillColor1': 'rgba(48, 209, 88, 0.28)',
+            'topFillColor2': 'rgba(48, 209, 88, 0.02)',
+            'bottomLineColor': theme.RED,
+            'bottomFillColor1': 'rgba(255, 69, 58, 0.02)',
+            'bottomFillColor2': 'rgba(255, 69, 58, 0.28)',
+            'lineWidth': 2,
+            'priceScaleId': 'left',
+        },
+        'priceLines': [{
+            'price': baseline_max, 'color': theme.BORDER, 'lineStyle': 2,
+            'title': 'MAX', 'axisLabelVisible': True,
         }],
-        width='100%',
-        chartOptions={'layout': {'background': {'type': 'solid', 'color': 'white'}}}
-    )
-]
+    }], {
+        'rightPriceScale': {'visible': False},
+        'leftPriceScale': {'visible': True, 'borderColor': theme.BORDER},
+        'timeScale': {'visible': False},
+    }),
+)
 
 
-panel3 = [
-    dash_tvlwc.Tvlwc(
-        id='area-chart',
-        seriesData=[generate_random_series(v0=15, n=50)],
-        seriesTypes=['area'],
-        seriesOptions=[{
-            'lineColor': '#FFAA30',
-            'topColor': '#2962FF',
-            'bottomColor': 'rgba(180, 98, 200, 0.1)',
-            'priceLineWidth': 3,
-            'priceLineColor': 'red'
-        }],
-        width='100%',
-        chartOptions=chart_options
-    )
-]
+line_data = generate_random_series(v0=1, n=50, ret=0.1)
+volume_data = generate_random_series(v0=100, n=50, ret=0.05)
+for point in volume_data:
+    # Per-point `color` overrides the series colour. Do not add a second series
+    # or use markers to recolour bars.
+    point['color'] = random.choice(['rgba(48, 209, 88, 0.55)',
+                                    'rgba(255, 69, 58, 0.55)'])
 
-
-p4_series = generate_random_series(v0=5000, n=50)
-p4_mean = sum([p['value'] for p in p4_series]) / 50
-p4_max = max([p['value'] for p in p4_series])
-price_lines = [{'price': p4_max, 'color': '#2962FF', 'lineStyle': 0, 'title': 'MAX PRICE', 'axisLabelVisible': True}]
-panel4 = [
-    dash_tvlwc.Tvlwc(
-        id='baseline-chart',
-        seriesData=[p4_series],
-        seriesTypes=['baseline'],
-        seriesOptions=[{
-            'baseValue': {'type': 'price', 'price': p4_mean},
-            'topFillColor1': 'black',
-            'topFillColor2': 'rgba(255,255,255,0)',
-            'topLineColor': 'black',
-            'crosshairMarkerRadius': 8,
-            'lineWidth': 5,
-            'priceScaleId': 'left'
-        }],
-        seriesPriceLines=[price_lines],
-        width='100%',
-        chartOptions={
-            'rightPriceScale': {'visible': False},
-            'leftPriceScale': {'visible': True, 'borderColor': 'rgba(197, 203, 206, 1)',},
-            'timeScale': {'visible': False},
-            'grid': {'vertLines': {'visible': False}, 'horzLines': {'style': 0, 'color': 'black'}},
-        }
-    )
-]
-
-
-# add markers and add color to volume bar
-p5_series = generate_random_series(v0=1, n=50, ret=0.1)
-markers = [
-    {'time': p5_series[15]['time'], 'position': 'aboveBar', 'color': '#f68410', 'shape': 'circle', 'text': 'Signal'},
-    {'time': p5_series[20]['time'], 'position': 'belowBar', 'color': 'white', 'shape': 'arrowUp', 'text': 'Buy'}
-]
-p5_series_volume = generate_random_series(v0=100, n=50, ret=0.05)
-for i in p5_series_volume:
-    i['color'] = random.choice(['rgba(0, 150, 136, 0.8)', 'rgba(255,82,82, 0.8)'])
-
-panel5 = [
-    dash_tvlwc.Tvlwc(
-        id='line-chart',
-        seriesData=[p5_series, p5_series_volume],
-        seriesTypes=['line', 'histogram'],
-        seriesOptions=[
-            {
-                'lineWidth': 1
-            },
-            {
-                'color': '#26a69a',
+line_and_volume = theme.panel(
+    'Line and volume', 'priceScaleOptions.scaleMargins',
+    chart('line-chart', [
+        {
+            'id': 'price',
+            'type': 'line',
+            'data': line_data,
+            'options': {'lineWidth': 2, 'color': theme.CYAN},
+            'markers': [
+                {'time': line_data[15]['time'], 'position': 'aboveBar',
+                 'color': theme.ORANGE, 'shape': 'circle', 'text': 'Signal'},
+                {'time': line_data[20]['time'], 'position': 'belowBar',
+                 'color': theme.GREEN, 'shape': 'arrowUp', 'text': 'Buy'},
+            ],
+        },
+        {
+            'id': 'volume',
+            'type': 'histogram',
+            'data': volume_data,
+            'options': {
                 'priceFormat': {'type': 'volume'},
                 'priceScaleId': '',
-                'scaleMargins': {'top': 0.9, 'bottom': 0},
-                'priceLineVisible': False
+                'priceLineVisible': False,
+                'lastValueVisible': False,
             },
-        ],
-        seriesMarkers=[markers],
-        width='100%',
-        chartOptions=chart_options
-    )
-]
+            # `scaleMargins` belongs to the price scale, not to the series.
+            'priceScaleOptions': {'scaleMargins': {'top': 0.9, 'bottom': 0}},
+        },
+    ]),
+)
 
 
-p6_series = generate_random_series(v0=100, n=50, ret=0.3)
-for idx, _ in enumerate(p6_series):
-    if idx in [5,12,13,14,20,33,34,46]:
-        p6_series[idx]['color'] = 'white'
+histogram_data = generate_random_series(v0=100, n=50, ret=0.3)
+for i in (5, 12, 13, 14, 20, 33, 34, 46):
+    histogram_data[i]['color'] = theme.MINT
 
-panel6 = [
-    dash_tvlwc.Tvlwc(
-        id='histogram-chart',
-        seriesData=[p6_series],
-        seriesTypes=['histogram'],
-        seriesOptions=[{
-            'color': '#ff80cc',
+histogram = theme.panel(
+    'Histogram', 'per-point color, base = 100',
+    chart('histogram-chart', [{
+        'id': 'value',
+        'type': 'histogram',
+        'data': histogram_data,
+        'options': {
+            'color': theme.PURPLE,
             'base': 100,
             'priceLineVisible': False,
-            'lastValueVisible': False
-        }],
-        width='100%',
-        chartOptions={'layout': {'textColor': '#ff80cc', 'background': {'type': 'solid', 'color': 'black'}}}
-    )
-]
+            'lastValueVisible': False,
+        },
+    }]),
+)
 
 
-app = dash.Dash(__name__, external_stylesheets=['./assets/stylesheet.css'])
+app = dash.Dash(__name__, external_stylesheets=[theme.FONTS])
 app.layout = html.Div([
     dcc.Interval(id='timer', interval=500),
-    html.Div(className='container', children=[
-        html.Div(className='main-container', children=[
-            html.H1('🎛 Dash Tradingview Lightweight Charts Component 📊'),
-            dcc.Markdown('''
-            You are looking at a [Dash](https://dash.plotly.com/) app.
-            Dash Tradingview Lightweight Charts Components is a custom Dash component
-            that wraps the popular [TradingView Lightweight Charts by TradingView](https://github.com/tradingview/lightweight-charts),
-            and renders it for use in Python Dash.
-
-            Source code is available on [Github](https://github.com/tysonwu/dash-tradingview).
-            Availble on [PyPI](https://pypi.org/project/dash-tvlwc/).
-            ''', link_target='_blank'),
-            html.Div(children=main_panel),
-            html.H2('Highly customizable styling options'),
-            html.Div(className='options-container', children=[
-                html.Div(className='one', children=panel1),
-                html.Div(className='two', children=panel2),
-                html.Div(className='three', children=panel3),
-                html.Div(className='four', children=panel4),
-                html.Div(className='five', children=panel5),
-                html.Div(className='six', children=panel6),
-            ])
+    theme.topbar('dash-tvlwc', 'lightweight-charts 5.2.1 · dash-tvlwc 0.2.0-dev'),
+    html.Main(className='shell', children=[
+        html.H1('Tradingview Lightweight Charts for Dash', className='page-title'),
+        theme.prose(dcc.Markdown('''
+        A custom [Dash](https://dash.plotly.com/) component wrapping
+        [TradingView Lightweight Charts](https://github.com/tradingview/lightweight-charts)
+        for use from Python. Source on
+        [Github](https://github.com/tysonwu/dash-tradingview), released on
+        [PyPI](https://pypi.org/project/dash-tvlwc/).
+        ''', link_target='_blank')),
+        html.Div(hero, style={'marginTop': '16px'}),
+        html.H2('Styling options', className='section-title'),
+        html.Div(className='panel-grid options-grid', children=[
+            bar, candlestick, area, baseline, line_and_volume, histogram,
         ]),
-        html.Span('By Tyson Wu, 2023')
-    ])
+        html.Div(className='footer', children=[
+            html.Span('By Tyson Wu'),
+            html.Span('MIT licensed · charts by TradingView'),
+        ]),
+    ]),
 ])
 
 
-# callbacks to demo
-@app.callback(
-    [
-        Output('tv-chart-1', 'chartOptions'),
-        Output('chart-info', 'style'),
-    ],
-    [Input('change-theme', 'n_clicks')],
-    [
-        State('tv-chart-1', 'chartOptions'),
-        State('chart-info', 'style'),
-    ],
-    prevent_initial_call=True
+@callback(
+    Output('tv-chart-1', 'chartOptions'),
+    Input('change-theme', 'n_clicks'),
+    State('tv-chart-1', 'chartOptions'),
+    prevent_initial_call=True,
 )
-def change_props(n, current_chart_options, chart_info_style):
-    if current_chart_options['layout']['background']['color'] == '#1B2631':
-        current_chart_options = {
-            'layout': {
-                'background': {'type': ColorType.Solid, 'color': '#dddddd'},
-                'textColor': '#111111',
-            },
-            'grid': {
-                'vertLines': {'visible': True, 'color': 'rgba(0,0,0,0.1)'},
-                'horzLines': {'visible': True, 'color': 'rgba(0,0,0,0.1)'},
-            }
-        }
-        chart_info_style['color'] = '#111111'
+def change_layer(n_clicks, chart_options):
+    current = chart_options['layout']['background']['color']
+    nxt = LAYERS[1] if current == LAYERS[0] else LAYERS[0]
+    return merge(chart_options, {'layout': {'background': {'type': 'solid',
+                                                           'color': nxt}}})
+
+
+@callback(
+    Output('tv-chart-1', 'series'),
+    Input('change-chart-type', 'n_clicks'),
+    Input('timer', 'n_intervals'),
+    State('tv-chart-1', 'series'),
+    prevent_initial_call=True,
+)
+def update_main_chart(n_clicks, n_intervals, series):
+    """Everything about a series lives in one `series` prop, so the type switch
+    and the ticker share a callback and dispatch on `ctx.triggered_id`. Two
+    callbacks cannot write the same prop without `allow_duplicate=True`.
+    """
+    series = copy.deepcopy(series)
+    main = series[0]
+
+    if ctx.triggered_id == 'change-chart-type':
+        if main['type'] == 'candlestick':
+            main['type'] = 'line'
+            main['data'] = generate_random_series(100, n=200)
+            main['options'] = {'lineWidth': 2, 'color': theme.CYAN}
+        else:
+            main['type'] = 'candlestick'
+            main['data'] = generate_random_ohlc(100, n=200)
+            main['options'] = {'upColor': theme.GREEN, 'downColor': theme.RED,
+                               'borderVisible': False,
+                               'wickUpColor': theme.GREEN,
+                               'wickDownColor': theme.RED}
+        return series
+
+    # Sliding window: append a bar, drop the oldest. Times come back in the form
+    # they were given in, so a series built from 'YYYY-MM-DD' strings reports
+    # strings. Rewriting the whole series on a timer is the only route today;
+    # the `tick` prop will replace it with an incremental append.
+    last = main['data'][-1]
+    next_day = (date.fromisoformat(last['time']) + timedelta(days=1)).isoformat()
+    if main['type'] == 'candlestick':
+        new_point = generate_random_ohlc(v0=last['close'], n=1, t0=next_day)
     else:
-        current_chart_options = {
-            'layout': {
-                'background': {'type': ColorType.Solid, 'color': '#1B2631'},
-                'textColor': 'white',
-            },
-            'grid': {
-                'vertLines': {'visible': True, 'color': 'rgba(255,255,255,0.1)'},
-                'horzLines': {'visible': True, 'color': 'rgba(255,255,255,0.1)'},
-            },
-        }
-        chart_info_style['color'] = '#bbbbbb'
-
-    return [current_chart_options, chart_info_style]
+        new_point = generate_random_series(v0=last['value'], n=1, t0=next_day)
+    main['data'] = main['data'][1:] + new_point
+    return series
 
 
-@app.callback(
-    [
-        Output('tv-chart-1', 'seriesData'),
-        Output('tv-chart-1', 'seriesTypes'),
-    ],
-    [
-        Input('change-chart-type', 'n_clicks'),
-        Input('timer', 'n_intervals')
-    ],
-    [
-        State('tv-chart-1', 'seriesData'),
-        State('tv-chart-1', 'seriesTypes'),
-    ],
-    prevent_initial_call=True
+@callback(
+    Output('chart-date', 'children'),
+    Output('chart-price', 'children'),
+    Input('tv-chart-1', 'crosshair'),
+    prevent_initial_call=True,
 )
-def change_props(n, interval, series_data, series_type):
-    if ctx.triggered_id == 'timer':
-        last_close_date = series_data[0][-1]['time']
-        last_close_dt = datetime(last_close_date['year'], last_close_date['month'], last_close_date['day'])
-        if series_type == [SeriesType.Candlestick]:
-            new_datapoint = generate_random_ohlc(
-                t0=(last_close_dt + timedelta(days=1)).strftime('%Y-%m-%d'),
-                v0=series_data[0][-1]['close'], n=1
-            )
-            series_data[0].extend(new_datapoint)
-        else:
-            new_datapoint = generate_random_series(
-                t0=(last_close_dt + timedelta(days=1)).strftime('%Y-%m-%d'),
-                v0=series_data[0][-1]['value'], n=1
-            )
-            series_data[0].extend(new_datapoint)
-        series_data[0] = series_data[0][1:]
-        return [series_data, series_type]
-
-    elif ctx.triggered_id == 'change-chart-type':
-        if series_type == [SeriesType.Candlestick]:
-            series_type = [SeriesType.Line]
-            series_data = [generate_random_series(100, n=100)]
-        else:
-            series_type = [SeriesType.Candlestick]
-            series_data = [generate_random_ohlc(100, n=100)]
-        return [series_data, series_type]
-
-
-
-@app.callback(
-    [
-        Output('chart-date', 'children'),
-        Output('chart-price', 'children'),
-    ],
-    [Input('tv-chart-1', 'crosshair')],
-    [State('tv-chart-1', 'seriesTypes')],
-    prevent_initial_call=True
-)
-def crosshair_move(crosshair, series_types):
+def crosshair_move(crosshair):
+    # `seriesData` is keyed by the id given in the `series` prop, and holds the
+    # whole data point rather than a bare price.
+    crosshair = crosshair or {}
+    point = crosshair.get('seriesData', {}).get('main')
     time = crosshair.get('time')
-    prices = crosshair['seriesPrices']
 
-    if time is not None:
-        time = datetime(time['year'], time['month'], time['day']).strftime('%Y-%m-%d') if time is not None else time
-        time = f'{time}' if time is not None else None
+    if not point or not time:
+        return 'Hover the chart for date and price', ''
 
-    if prices:
-        if series_types == [SeriesType.Candlestick]:
-            prices = f"{prices['0']['close']:.2f}"
-        else:
-            prices = f"{prices['0']:.2f}"
-
-    if not time and not prices:
-        time = 'Hover on the plot to see date and price details.'
-
-    return [time, prices]
+    value = point.get('close', point.get('value'))
+    return time, f'${value:,.2f}'
 
 
 if __name__ == '__main__':

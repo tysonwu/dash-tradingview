@@ -1,96 +1,314 @@
-@import url('https://fonts.googleapis.com/css?family=Fira+sans');
-@import url('https://fonts.googleapis.com/css?family=Inter');
+/* Operator-console styling for the hosted demo.
+ *
+ * Monochrome structure, chromatic meaning: chrome is neutral, and colour is
+ * reserved for the charts, where it encodes direction and classification.
+ * Hard edges, flat depth, dense type.
+ *
+ * Structural values are mirrored in theme.py, which supplies them to the chart
+ * canvas. Keep the two in step.
+ *
+ * Dash serves every file in this folder to every app in it, so selectors are
+ * shared deliberately and grid variants are scoped per app. */
+
+:root {
+    --radius: 0;
+
+    --background: #121316;
+    --foreground: #eef0f7;
+    --card: #1b1e24;
+    --secondary: #252a32;
+    --accent: #0f1115;
+    --border: #4a5162;
+    --muted-foreground: #9aa1b1;
+
+    --ios-red: #ff453a;
+    --ios-green: #30d158;
+    --ios-blue: #0a84ff;
+    --ios-orange: #ff9f0a;
+    --ios-purple: #bf5af2;
+
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --bar-height: 28px;
+
+    /* Content column. The page reads as a normal document with gutters rather
+     * than an edge-to-edge dashboard, so everything centres on this width. */
+    --content-max: 1200px;
+    --gutter: 24px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    border-radius: var(--radius);
+}
 
 body {
-    font-family: 'Fira Sans', monospace;
-    font-size: small;
-    background-color: #1B2631;
-    color: #dddddd;
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
 }
 
-h1 {
-    text-align: center;
+/* Fixed top bar: always-available system context. */
+.topbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 10;
+    height: var(--bar-height);
+    background: var(--accent);
+    border-bottom: 1px solid var(--border);
 }
 
-#chart-info > span {
-    font-family: 'Inter', sans-serif;
-    display: block;
+/* The bar spans the viewport so it reads as chrome; its contents align to the
+ * same column as the page body. */
+.topbar-inner {
+    height: 100%;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-.options-container {
-    width: 100%;
-    margin-bottom: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 10px;
-    grid-template-areas:
-        "one two"
-        "three four"
-        "five six"
-    }
-    .options-container.one { grid-area: one;}
-    .options-container.two { grid-area: two;}
-    .options-container.three { grid-area: three;}
-    .options-container.four { grid-area: four;}
-    .options-container.five { grid-area: five;}
-    .options-container.six { grid-area: six;}
-
-.options-container > div {
-    border: 1px solid #dddddd;
-    box-shadow: 15px 15px #131b23;
+.topbar-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
 }
 
-a:link {
-    color: #d27117;
+.topbar-context {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-a:visited {
-    color: #deac17;
+.shell {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: calc(var(--bar-height) + 20px) var(--gutter) 48px;
 }
 
-a:hover {
-    color: #fff389;
+/* Panels: border plus tonal delta, never shadow. */
+.panel {
+    border: 1px solid var(--border);
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
-.main-container {
-    margin-bottom: 30px;
-    padding: 25px 50px;
-    border: 1px solid #dddddd;
-    box-shadow: 15px 15px #131b23;
+.panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 8px;
+    background: var(--secondary);
+    border-bottom: 1px solid var(--border);
 }
 
-.container {
-    width: 70vw;
-    height: 80vh;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10vh;
+.panel-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
-#tv-chart-1 {
-    border: 1px dashed #dddddd;
-    box-shadow: 15px 15px #131b23;
-    z-index: 9;
+.panel-meta {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted-foreground);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-button {
-    border: None;
-    color: #dddddd;
-    background-color: #ffffff05;
-    font-family: 'Fira Sans', monospace;
-    border: 1px solid #dddddd;
-    box-shadow: 10px 10px #131b23;
-    margin-bottom: 10px;
-    margin-right: 20px;
-    padding: 20px;
+.panel-body {
+    padding: 8px;
+    min-width: 0;
+}
+
+/* Compact monochrome controls. Semantic variants exist but are unused here,
+ * because none of these buttons communicates a state. */
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+}
+
+.btn {
+    height: 22px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: -0.01em;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #ffffff20;
+.btn:hover {
+    background: var(--secondary);
 }
 
-button:active {
-    background-color: #00000005;
+.btn:focus-visible {
+    outline: 1px solid var(--ios-blue);
+    outline-offset: 1px;
+}
+
+.btn:active {
+    background: var(--accent);
+}
+
+/* Technical strings: mono, dashed separation, no decoration. */
+.readout {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted-foreground);
+    background: var(--accent);
+    border: 1px solid var(--border);
+    padding: 6px 8px;
+}
+
+.readout-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 3px 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.readout-row:last-child {
+    border-bottom: 0;
+}
+
+.readout-key {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.readout-value {
+    color: var(--foreground);
+    text-align: right;
+    word-break: break-word;
+}
+
+.panel-grid {
+    display: grid;
+    gap: 10px;
+}
+
+/* Intro copy. Prose is the one place the page relaxes the dense-UI type scale,
+ * because it is read rather than scanned. */
+.prose {
+    max-width: 68ch;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+}
+
+.prose a {
+    color: var(--ios-blue);
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 28px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+}
+
+/* Hero chart with the price and date read out over the pane. */
+.hero {
+    position: relative;
+}
+
+.hero-readout {
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    z-index: 5;
+    pointer-events: none;
+    font-family: var(--font-mono);
+}
+
+.hero-price {
+    display: block;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--foreground);
+}
+
+.hero-date {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--muted-foreground);
+}
+
+.footer {
+    margin-top: 28px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted-foreground);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* Six equal panels. A uniform grid keeps every chart at the same bar density. */
+.options-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Adapt composition, not visual language. */
+@media (max-width: 1024px) {
+    .options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        /* Narrow the gutter rather than the content once the viewport
+         * approaches the column width. */
+        --gutter: 14px;
+    }
+
+    .options-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
