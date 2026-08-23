@@ -70,14 +70,6 @@ Each of these is an ordinary prop, set or read from a callback.
 | **Screenshots** | capture the canvas as a PNG |
 | **Three chart types** | a time axis (`Tvlwc`), a price axis (`Tvlwo`), a maturity axis (`Tvlwy`) |
 
-Some of these answer long-standing requests: sub-plots ([#3](https://github.com/tysonwu/dash-tradingview/issues/3), [#10](https://github.com/tysonwu/dash-tradingview/issues/10)), setting the visible time range ([#5](https://github.com/tysonwu/dash-tradingview/issues/5)), cross-chart crosshair sync ([#2](https://github.com/tysonwu/dash-tradingview/issues/2)), and changing time scale options on their own ([#11](https://github.com/tysonwu/dash-tradingview/issues/11)).
-
-Three more worked in earlier versions but were never written down, so they are worth naming:
-
-- **Two price scales.** Give a series `'priceScaleId': 'left'` and make the left scale visible.
-- **Per-point colours.** A `color` on a data point overrides the series colour, which is how volume bars get coloured by direction. No second series needed.
-- **Gaps.** A data point carrying only `time` is *whitespace*: it holds the slot and draws nothing. Use it rather than `None`.
-
 ## What it cannot do
 
 This is a bridge between Python and a JavaScript charting library, and some things do not survive the crossing:
