@@ -26,6 +26,11 @@
     --ios-blue: #0a84ff;
     --ios-orange: #ff9f0a;
     --ios-purple: #bf5af2;
+    /* Used by the code snippets. Values match theme.py, which supplies the
+     * same palette to the chart canvas. */
+    --ios-yellow: #ffd60a;
+    --ios-cyan: #64d2ff;
+    --ios-pink: #ff375f;
 
     --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
         Roboto, sans-serif;
@@ -309,6 +314,137 @@ body {
     }
 
     .options-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Code snippets under each panel.
+ *
+ * The panel is chart-then-code, so the code needs to read as a subordinate
+ * annotation rather than a second focal point: recessed a layer, dashed rule
+ * above it, and capped in height so a long fragment scrolls instead of pushing
+ * the next chart off the fold. */
+.snippet {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+}
+
+.snippet pre {
+    margin: 0;
+    max-height: 260px;
+    overflow: auto;
+    background: var(--accent);
+    border: 1px solid var(--border);
+}
+
+/* `dcc.Markdown` injects highlight.js's GitHub *light* theme into a <style>
+ * element at runtime and ignores its own `highlight_config` theme setting, so
+ * the defaults land near-black on this near-black panel. Every rule below is
+ * therefore written to outrank it: the injected theme targets `.hljs-keyword`
+ * and `pre code.hljs`, so scoping through `.snippet` wins on specificity no
+ * matter which stylesheet the browser applies last.
+ *
+ * Colours come from the same palette as the charts. Syntax highlighting is one
+ * of the few places structure carries meaning, so the token classes get real
+ * hues rather than the monochrome the rest of the chrome uses; each is checked
+ * to clear 4.5:1 against --accent. */
+.snippet pre code.hljs {
+    display: block;
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.55;
+    /* Long option dicts wrap rather than scroll sideways; horizontal scrolling
+     * a six-line fragment reads as a bug. */
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: transparent;
+    color: var(--foreground);
+}
+
+/* Comments carry most of the explanation in these fragments, so they are
+ * dimmed only as far as stays comfortably readable. */
+.snippet .hljs-comment,
+.snippet .hljs-quote {
+    color: #8b93a5;
+    font-style: normal;
+}
+
+.snippet .hljs-keyword,
+.snippet .hljs-selector-tag,
+.snippet .hljs-type {
+    color: var(--ios-purple);
+}
+
+.snippet .hljs-string,
+.snippet .hljs-subst {
+    color: #63e6e2;
+}
+
+.snippet .hljs-number,
+.snippet .hljs-symbol {
+    color: var(--ios-orange);
+}
+
+.snippet .hljs-literal,
+.snippet .hljs-built_in {
+    color: var(--ios-yellow);
+}
+
+.snippet .hljs-title,
+.snippet .hljs-name,
+.snippet .hljs-section,
+.snippet .hljs-attr {
+    color: var(--ios-cyan);
+}
+
+/* Decorators. `@callback` opens most of the interactive fragments, so it is
+ * worth being able to pick it out at a glance. */
+.snippet .hljs-meta {
+    color: var(--ios-pink);
+}
+
+.snippet .hljs-params,
+.snippet .hljs-variable,
+.snippet .hljs-attribute {
+    color: #c7ccd9;
+}
+
+.snippet .hljs-punctuation,
+.snippet .hljs-operator {
+    color: var(--muted-foreground);
+}
+
+/* Two panels per row is the widest that still leaves a code fragment readable
+ * at this type size.
+ *
+ * Panels size to their own content rather than stretching to the tallest in
+ * the row: snippet lengths vary a lot, and stretching pads the shorter panel
+ * with a block of empty card that reads as a rendering fault. */
+.demo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+}
+
+/* Panels whose point needs the full column: two charts side by side, or a
+ * fragment that is genuinely long. */
+.demo-grid .wide {
+    grid-column: 1 / -1;
+}
+
+.chart-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+@media (max-width: 860px) {
+    .demo-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .chart-pair {
         grid-template-columns: minmax(0, 1fr);
     }
 }

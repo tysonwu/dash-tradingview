@@ -8,7 +8,9 @@ Structure is monochrome; colour is reserved for meaning. Chart series therefore
 draw from the semantic palette (up/down, classification), never from decorative
 hues.
 """
-from dash import html
+import textwrap
+
+from dash import dcc, html
 
 # Structural tokens, dark console layer.
 BACKGROUND = '#121316'
@@ -109,3 +111,30 @@ def toolbar(*buttons):
 
 def button(label, component_id):
     return html.Button(label, id=component_id, className='btn', n_clicks=0)
+
+
+def snippet(code):
+    """The settings that produce the panel above it.
+
+    Deliberately a fragment rather than a runnable file: the point is which
+    keys matter, so data construction and styling common to every panel are
+    left out.
+
+    `dcc.Markdown` tokenises the fence, but the token colours come from
+    `assets/stylesheet.css`, not from `highlight_config`: Dash injects
+    highlight.js's GitHub light theme regardless of what that setting asks for,
+    which puts near-black text on this near-black panel.
+    """
+    body = textwrap.dedent(code).strip('\n')
+    return dcc.Markdown(f'```python\n{body}\n```', className='snippet')
+
+
+def demo_panel(title, meta, chart, code, *extra):
+    """A panel that shows a chart and the settings behind it.
+
+    Every panel on the page has the same three parts in the same order, so the
+    reader learns the shape once: what it is, what it looks like, how to write
+    it. `extra` goes between the chart and the code, for the controls a panel
+    needs to be worth interacting with.
+    """
+    return panel(title, meta, chart, *extra, snippet(code))

@@ -1,2 +1,5 @@
-dash
-dash_tvlwc
+# The demo uses props introduced in 0.2.0 (tick, dataAction, panes, watermark)
+# and the Tvlwo and Tvlwy components, none of which exist in 0.1.1. Pinned so a
+# host installing from PyPI fails at install time rather than at import.
+dash>=3.0.0
+dash_tvlwc>=0.2.0
