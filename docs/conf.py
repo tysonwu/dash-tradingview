@@ -17,12 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Dash Tradingview Lightweight Charts Component'
-copyright = '2023, Tyson Wu'
+project = 'dash-tvlwc'
+copyright = '2026, Tyson Wu'
 author = 'Tyson Wu'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.1.1'
+release = 'v0.2.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,6 +31,13 @@ release = 'v0.1.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ["myst_parser"]
+
+# `deflist` for the prop reference, `colon_fence` for admonitions
+# written as ::: blocks rather than backticks.
+myst_enable_extensions = ["deflist", "colon_fence"]
+
+# The prop reference nests three levels deep in places.
+myst_heading_anchors = 3
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -46,6 +53,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+# Furo builds its sidebar heading from project and release. Left to the
+# full product name it wraps to four lines and pushes the navigation down.
+html_title = f"dash-tvlwc {release}"
+
 html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,

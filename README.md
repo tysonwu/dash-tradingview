@@ -1,242 +1,115 @@
-<div style="text-align: center">
-<h1>🎛 Dash Tradingview Lightweight Charts Component 📊</h1>
+<div align="center">
 
-[Source Code](https://github.com/tysonwu/dash-tradingview) | [Documentation](https://dash-tradingview.readthedocs.io/) | [Live Demo](http://tysonwu.pythonanywhere.com/)
+# 📊 dash-tvlwc
+
+**Financial charts for [Dash](https://dash.plotly.com/), written in Python.**
+
+A Dash component that wraps [TradingView Lightweight Charts](https://github.com/tradingview/lightweight-charts), so you can build candlestick, line, area and volume charts without writing any JavaScript.
+
+[Live demo](http://tysonwu.pythonanywhere.com/) · [Documentation](https://dash-tradingview.readthedocs.io/) · [PyPI](https://pypi.org/project/dash-tvlwc/)
 
 </div>
 
-Dash Tradingview Lightweight Charts Components is a Dash component library. This component wraps [TradingView's Lightweight Charts](https://github.com/tradingview/lightweight-charts), the popular financial charting library written in Javascript, and extends it for use in Python [Dash](https://dash.plotly.com/) webapp.
+---
 
-## Releases
+## Why this and not a general plotting library
 
-| Date        | Tag    |
-| ----------- | ------ |
-| 23 Feb 2023 | v0.1.1 |
+Lightweight Charts is built for one job: price series that stay smooth while you pan, zoom and stream into them. It handles very large series at 60fps, which general-purpose plotting libraries are not designed for.
 
-## Installation
+This package makes it an ordinary Dash component. You describe the chart with Python dictionaries, and you read and drive it with ordinary Dash callbacks.
 
-This package is available in PyPI:
+## Install
 
 ```
 pip install dash_tvlwc
 ```
 
-## Demo
-
-### Interactive demo
-
-An interactive demo hosted and available [here](http://tysonwu.pythonanywhere.com/). The source code of this live demo can be found at `./demo/app.py`.
-
->> The demo hosting on pythonanywhere somehow suffers from very slow callbacks. Fixing this soon.
-
-### Chart and series style options
-- 1-to-1 chart and series option capability as in original lightweight chart
-- See `./examples/options.py`
-![Options](./docs/_static/options.png "Options")
-
-### Interactivity with [Dash callbacks](https://dash.plotly.com/basic-callbacks)
-- Modify data or styles on any triggers
-- See `./examples/interactivity.py`
-![Interactivity](./docs/_static/interactivity.gif "Interactivity")
-
-### Minimal example
-
-The source code of this minimal example can be found at `./demo/minimal_example.py`.
-
-1. Import dependencies
-```python
-import dash
-from dash import html
-import dash_tvlwc
-```
-
-2. Make some random candlestick data and line plot data
-```python
-candlestick_data = [
-    {'close': 97.56, 'high': 101.29, 'low': 95.07, 'open': 100, 'time': '2021-01-01'},
-    {'close': 96.06, 'high': 99.06, 'low': 95.17, 'open': 97.56, 'time': '2021-01-02'},
-    {'close': 92.06, 'high': 98.39, 'low': 90.72, 'open': 96.06, 'time': '2021-01-03'},
-    {'close': 95.74, 'high': 97.87, 'low': 89.75, 'open': 92.06, 'time': '2021-01-04'},
-    {'close': 92.44, 'high': 97.5, 'low': 88.56, 'open': 95.74, 'time': '2021-01-05'},
-    {'close': 89.31, 'high': 93.1, 'low': 85.20, 'open': 92.44, 'time': '2021-01-06'},
-    {'close': 85.10, 'high': 93.08, 'low': 82.23, 'open': 89.31, 'time': '2021-01-07'},
-    {'close': 81.87, 'high': 88.34, 'low': 77.97, 'open': 85.10, 'time': '2021-01-08'},
-    {'close': 79.55, 'high': 82.44, 'low': 76.08, 'open': 81.87, 'time': '2021-01-09'},
-    {'close': 82.74, 'high': 84.01, 'low': 78, 'open': 79.55, 'time': '2021-01-10'}
-]
-
-line_data = [
-    {'time': '2021-01-01', 'value': 100.35},
-    {'time': '2021-01-02', 'value': 97.09},
-    {'time': '2021-01-03', 'value': 95.74},
-    {'time': '2021-01-04', 'value': 98.72},
-    {'time': '2021-01-05', 'value': 100.3},
-    {'time': '2021-01-06', 'value': 95.8},
-    {'time': '2021-01-07', 'value': 91.22},
-    {'time': '2021-01-08', 'value': 94.26},
-    {'time': '2021-01-09', 'value': 94.9},
-    {'time': '2021-01-10', 'value': 94.85}
-]
-```
-
-3. Initialize Dash app and add the Tvlwc component
-```python
-app = dash.Dash(__name__)
-app.layout = html.Div(children=[
-    dash_tvlwc.Tvlwc(
-        seriesData=[candlestick_data, line_data],
-        seriesTypes=['candlestick', 'line'],
-    ),
-])
-
-if __name__ == '__main__':
-    app.run_server()
-```
-
-4. Run the app by `python minimal_example.py`. The app should be running on `localhost:8050/`. You should see the plot:
-
-![Minimal example](./docs/_static/minimal_example.png "Minimal example")
-
-## References: Chart properties
-
-The Tradingview Lightweight Chart library is highly customizable in style. For the complete list of chart options and series options available, please refer to [the official API documentation](https://tradingview.github.io/lightweight-charts/docs/3.8).
-
-**Configurable props**
-
-|Property |Description  |
-|---|---|
-|`chartOptions`|a dict of options on chart canvas.|
-|`seriesData`|a list series of list of timepoint dicts on series data.|
-|`seriesTypes`|a list of series types, in the same order as `seriesData`.|
-|`seriesOptions`|a list of series option dict for each series, in the same order as `seriesData`.|
-|`seriesMarkers`|a list of list of markers dicts for each series, in the same order as `seriesData`.|
-|`seriesPriceLines`|a list of list of price line dicts for each series, in the same order as `seriesData`.|
-|`width`|width of outer container of the chart.|
-|`height`|height of outer container of the chart.|
-
-**Read-only props**
-
-|Property |Description  |
-|---|---|
-|`id`|identifiable ID for the chart.|
-|`crosshair`|position of last mouse hover on chart (crosshair coordinates).|
-|`click`|position of last mouse click on chart (click coordinates).|
-|`fullChartOptions`|full dict of applied chart options including default options.|
-|`fullPriceScaleOptions`|full dict of applied series options including default options.|
-|`timeRangeVisibleRange`|from-to dates of visible time range.|
-|`timeRangeVisibleLogicalRange`|from-to numbers of visible time range.|
-|`timeScaleWidth`|width of time scale.|
-|`timeScaleHeight`|height of time scale.|
-|`fullTimeScaleOptions`|full dict of applied time scale options including default options.|
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## Development
-
-### Requirements
-
-- Node.js 18 or newer, npm 9 or newer
-- Python 3.9 or newer
-
-### Verified compatibility
-
-| Dash   | React  | Status                                  |
-| ------ | ------ | --------------------------------------- |
-| 4.4.1  | 18.3.1 | Works                                   |
-| 3.4.0  | 18.3.1 | Works                                   |
-| 3.0.0  | 18.3.1 | Works                                   |
-| 2.18.2 | 16.14  | Works, but below the declared floor      |
-
-The package declares `dash>=3.0.0`. Dash 3.0.0 and 2.18.2 need Python 3.13 or older, as they call `pkgutil.find_loader`, which was removed in Python 3.14.
-
-### Set up
-
-Run all commands from the repository root.
-
-1. Install npm packages.
-    ```
-    $ npm install
-    ```
-2. Create a virtual environment and activate it.
-    ```
-    $ python -m venv venv
-    $ . venv/bin/activate
-    ```
-    _Note: `venv\Scripts\activate` on Windows._
-
-3. Install the Python packages required to build the component.
-    ```
-    $ pip install -r requirements.txt
-    ```
-
-### Build
-
-```
-$ npm run build
-```
-
-This runs two stages, which can also be run separately:
-
-- `npm run build:js` bundles `src/lib` into `dash_tvlwc/dash_tvlwc.min.js` with webpack.
-- `npm run build:backends` generates the Python, R, and Julia classes from every component in `src/lib/components/`: `Tvlwc` on a time axis, `Tvlwo` on a price axis, and `Tvlwy` on a maturity axis. The virtual environment must be active so that `dash-generate-components` is on `PATH`.
-
-The three components share one implementation. `src/lib/core/` holds the chart itself, generic in what sits on the horizontal scale; a file in `src/lib/components/` supplies a constructor, the series types that chart accepts, and the prop defaults. Anything in `src/lib/components/` is scanned as a component, so shared code belongs in `src/lib/core/`.
-
-`npm run typecheck` runs `tsc --noEmit` over the TypeScript sources without producing a bundle.
-
-### Try the component in a Dash app
-
-The snippet below renders an empty pane with axes. Add a `series` list to draw something; the `## References: Chart properties` section above still describes the 0.1.1 prop schema and is being rewritten.
-
-Save the following as `app.py` in the repository root, so that `import dash_tvlwc` picks up your local build rather than an installed copy:
+## Your first chart
 
 ```python
 import dash
 from dash import html
 import dash_tvlwc
+
+candles = [
+    {'time': '2026-01-01', 'open': 100, 'high': 101.3, 'low': 95.1, 'close': 97.6},
+    {'time': '2026-01-02', 'open': 97.6, 'high': 99.1, 'low': 95.2, 'close': 96.1},
+    {'time': '2026-01-03', 'open': 96.1, 'high': 98.4, 'low': 90.7, 'close': 92.1},
+]
 
 app = dash.Dash(__name__)
 app.layout = html.Div([
     dash_tvlwc.Tvlwc(
-        id='chart',
+        series=[{'id': 'price', 'type': 'candlestick', 'data': candles}],
         width='100%',
         height=400,
-        chartOptions={
-            'layout': {
-                'background': {'type': 'solid', 'color': '#ffffff'},
-                'textColor': '#333333',
-            },
-            'timeScale': {'timeVisible': True},
-        },
     ),
 ])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 ```
 
-Run it with `python app.py` and visit http://localhost:8050. With `debug=True`, prop types are validated in the browser and any mismatch is reported in the console.
+Each series is one dictionary carrying its own `id`, `type` and `data`. Put several in the list to draw several series on one chart.
 
-### Try the component without Dash
+## What you can do
 
-```
-$ npm start
-```
+Each of these is an ordinary prop, set or read from a callback.
 
-This serves `src/demo` through webpack-dev-server at http://localhost:8080 and renders `Tvlwc.tsx` directly in React. It rebuilds on save and does not require the Python bindings, which makes it the faster loop when working on the component itself.
+| | |
+| --- | --- |
+| **Six series types** | candlestick, bar, line, area, baseline, histogram |
+| **Sub-plots** | stack panes that share one time axis, for price over volume over an indicator |
+| **Live streaming** | append or revise a single bar without resending the whole series |
+| **Mouse events** | crosshair, click and double-click, reported with the time and price under the cursor |
+| **Drive the view** | set the visible range, scroll, fit to content, or place the crosshair from Python |
+| **Sync two charts** | point them at each other so hovering one moves the other |
+| **Infinite history** | be told when the user scrolls past the start of the data, and send more |
+| **Markers and price lines** | anchored to a bar or to a price |
+| **Read data back** | ask a series for one bar, or for its last value, without shipping the dataset |
+| **Screenshots** | capture the canvas as a PNG |
+| **Three chart types** | a time axis (`Tvlwc`), a price axis (`Tvlwo`), a maturity axis (`Tvlwy`) |
 
-### Bundled examples
+Some of these answer long-standing requests: sub-plots ([#3](https://github.com/tysonwu/dash-tradingview/issues/3), [#10](https://github.com/tysonwu/dash-tradingview/issues/10)), setting the visible time range ([#5](https://github.com/tysonwu/dash-tradingview/issues/5)), cross-chart crosshair sync ([#2](https://github.com/tysonwu/dash-tradingview/issues/2)), and changing time scale options on their own ([#11](https://github.com/tysonwu/dash-tradingview/issues/11)).
 
-The apps under `examples/` and `demo/` run against the current component. Each one needs the repository root on `PYTHONPATH`, because they import `theme` and `data_generator` as siblings:
+Three more worked in earlier versions but were never written down, so they are worth naming:
 
-```
-$ PYTHONPATH=. python examples/options.py
-```
+- **Two price scales.** Give a series `'priceScaleId': 'left'` and make the left scale visible.
+- **Per-point colours.** A `color` on a data point overrides the series colour, which is how volume bars get coloured by direction. No second series needed.
+- **Gaps.** A data point carrying only `time` is *whitespace*: it holds the slot and draws nothing. Use it rather than `None`.
 
-- `examples/options.py` - chart and series styling, one panel per option group.
-- `examples/interactivity.py` - callbacks driving and reading the chart.
-- `examples/v5_features.py` - every capability added for v5, one panel each.
-- `examples/chart_types.py` - `Tvlwc`, `Tvlwo` and `Tvlwy` side by side.
-- `demo/app.py` - the hosted demo.
+## What it cannot do
+
+This is a bridge between Python and a JavaScript charting library, and some things do not survive the crossing:
+
+- **Anything that has to be a function** - custom scaling logic, colour parsers, axis formatters written in Python. Formatters are still possible, but you write them in a small JavaScript file and refer to them by name.
+- **Plugins, custom series types and drawing tools.** These are JavaScript classes in the underlying library, and a class cannot be expressed as a Dash prop.
+- **Anything that must react within a single frame**, such as dragging a trendline. Every interaction routed through a Python callback costs a network round trip.
+- **Reading a whole dataset back out of the chart.** You can ask for one point at a time; you cannot ask for all of them.
+
+The documentation has [a page on each of these](https://dash-tradingview.readthedocs.io/en/latest/limitations.html) and what to do instead.
+
+## Documentation
+
+- **[Documentation site](https://dash-tradingview.readthedocs.io/)** - how to express a chart in Python, with worked examples.
+- **[Lightweight Charts v5 API](https://tradingview.github.io/lightweight-charts/docs)** - the full list of chart and series options. Whatever the library accepts, this component passes through.
+- **[`demo/app.py`](./demo/app.py)** - source of the [live demo](http://tysonwu.pythonanywhere.com/); every panel shows the settings behind it.
+- **[`examples/`](./examples/)** - runnable apps for styling, callbacks and each capability.
+
+## Compatibility
+
+| | |
+| --- | --- |
+| Python | 3.9 or newer |
+| Dash | 3.0 or newer, tested to 4.4 |
+| Lightweight Charts | 5.2.1, bundled |
+
+Version 0.2.0 changes the prop schema. Upgrading from 0.1.x is covered by the [migration guide](https://dash-tradingview.readthedocs.io/en/latest/migration.html).
+
+## Contributing
+
+Bug reports and pull requests are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md), and [DEVELOPMENT.md](./DEVELOPMENT.md) for building the component from source.
+
+## License
+
+MIT. Charts by [TradingView](https://www.tradingview.com/), used under the Apache 2.0 license of Lightweight Charts.

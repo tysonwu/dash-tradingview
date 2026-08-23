@@ -1,185 +1,185 @@
-# Reference
+# Prop reference
 
-The Tradingview Lightweight Chart library (referred as *the original library* in below) is highly customizable in style. For the complete list of chart options and series options available, please refer to [the official API documentation](https://tradingview.github.io/lightweight-charts/docs/3.8).
+Every prop of `Tvlwc`, `Tvlwo` and `Tvlwy`. The three components have an
+identical prop surface; only the meaning of `time` and the accepted series types
+differ, as described in [chart types](chart_types).
 
-```{note}
-The supported version of Tradingview Lightweight Chart is v3.8.0. Make sure you consult the v3.8 document instead of latest version above 4.x.
-```
+Nothing here is required. A component with no props renders an empty chart.
 
-## Dash Properties
+## Describing the chart
 
-**Configurable props**
+You set these. They say what the chart is.
 
-|Property |Description  |
-|---|---|
-|`chartOptions`|a dict of options on chart canvas.|
-|`seriesData`|a list series of list of timepoint dicts on series data.|
-|`seriesTypes`|a list of series types, in the same order as `seriesData`.|
-|`seriesOptions`|a list of series option dict for each series, in the same order as `seriesData`.|
-|`seriesMarkers`|a list of list of markers dicts for each series, in the same order as `seriesData`.|
-|`seriesPriceLines`|a list of list of price line dicts for each series, in the same order as `seriesData`.|
-|`width`|width of outer container of the chart.|
-|`height`|height of outer container of the chart.|
+`id`
+: The Dash component id.
 
-**Read-only props**
+`series`
+: List of series dictionaries. The whole of [Series and data](series).
 
-|Property |Description  |
-|---|---|
-|`id`|identifiable ID for the chart.|
-|`crosshair`|position of last mouse hover on chart (crosshair coordinates).|
-|`click`|position of last mouse click on chart (click coordinates).|
-|`fullChartOptions`|full dict of applied chart options including default options.|
-|`fullPriceScaleOptions`|full dict of applied series options including default options.|
-|`timeRangeVisibleRange`|from-to dates of visible time range.|
-|`timeRangeVisibleLogicalRange`|from-to numbers of visible time range.|
-|`timeScaleWidth`|width of time scale.|
-|`timeScaleHeight`|height of time scale.|
-|`fullTimeScaleOptions`|full dict of applied time scale options including default options.|
+`chartOptions`
+: Chart options, passed through to the library. See [options](options).
 
-## Series Configurations
+`paneOptions`
+: List, positional by pane index. Each entry takes `stretchFactor` or `height`,
+  not both. Panes are created by `series[].pane`.
 
-```{note}
-A chart can contain more than one series. Therefore, series configurations should be passed in the format of a list. The order of the specifications in the lists does matter.
+`watermark`
+: Text or image drawn over a pane. `{'lines': [...], 'horzAlign': ...,
+  'vertAlign': ...}` for text, or `{'imageUrl': ...}` for an image. `None`
+  removes it. A centred text watermark needs an explicit `lineHeight` on each
+  line, or it does not render.
 
-For example, data at index 0 of the property `seriesData` will be rendered along with the optional configurations specified at index 0 of the property `seriesOptions` if any dict is given there.
-```
+`width`, `height`
+: Size of the containing `div`. Any CSS value. Default `'100%'` and `400`.
 
-### `seriesTypes`
+## Turning reports on
 
-Sets type of the plot. Example:
-```python
-# two series, first one being candlestick plot and second being single line plot
-seriesTypes=['candlestick', 'line']
-```
-There are six possible plot types, namely: `bar`, `candlestick`, `area`, `baseline`, `line`, and `histogram`.
+All default to `False`, because every report is a network round trip.
 
-### `seriesData`
+`subscribeCrosshair`
+: Enables `crosshair`, on every pointer move.
 
-Sets the data of each series.
+`subscribeClick`
+: Enables `click`.
 
-**Example**
-```python
-candlestick_data = [
-    {'close': 97.56, 'high': 101.29, 'low': 95.07, 'open': 100, 'time': '2021-01-01'},
-    {'close': 96.06, 'high': 99.06, 'low': 95.17, 'open': 97.56, 'time': '2021-01-02'},
-    {'close': 92.06, 'high': 98.39, 'low': 90.72, 'open': 96.06, 'time': '2021-01-03'},
-    {'close': 95.74, 'high': 97.87, 'low': 89.75, 'open': 92.06, 'time': '2021-01-04'}
+`subscribeDblClick`
+: Enables `dblClick`. A double-click also fires `click`.
 
-line_data = [
-    {'time': '2021-01-01', 'value': 100.35},
-    {'time': '2021-01-02', 'value': 97.09},
-    {'time': '2021-01-03', 'value': 95.74},
-    {'time': '2021-01-04', 'value': 98.72}
-]
+`subscribeVisibleRange`
+: Enables `visibleRange`, `visibleLogicalRange` and `barsInLogicalRange`.
 
-seriesData = [candlestick_data, line_data]
-```
+`subscribeSize`
+: Enables `priceScaleWidth`, `timeScaleWidth` and `timeScaleHeight`.
 
-Each of the timepoint data passed should contain a dict with keys `time`, `open`, `high`, `low`, `close` for the series of type `candlestick` and `bar`, and `time`, `value` for the other series types. Whitespace data (dates without values) is possible. Adding datapoint-specific color options is also possible for some series types. See [original documentation here](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/SeriesDataItemTypeMap).
+`reportThrottle`
+: Milliseconds to coalesce reports over, applied to every stream above. `0`, the
+  default, batches to one report per animation frame.
 
-### `seriesMarkers`
+## Commands
 
-Sets the additional markers associated with a particular series.
+Set these to make something happen once. Change the `nonce` to repeat a command,
+since a prop reset to the value it already holds is not a change.
 
-See [original documentation here](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/SeriesMarker) for all possible markers options.
+`tick`
+: `{'id': ..., 'bar': {...}, 'historicalUpdate': False}`, or a list of them.
+  Appends a bar when its time is after the last, replaces when it matches.
+  Needs no nonce, because the bar itself differs.
 
-**Example**
-```python
-seriesMarkers = [[
-    {'time': '2021-01-01', 'position': 'aboveBar', 'color': '#f68410', 'shape': 'circle', 'text': 'Signal'},
-    {'time': '2021-01-02', 'position': 'belowBar', 'color': 'white', 'shape': 'arrowUp', 'text': 'Buy'}
-]]
-```
+`timeScaleAction`
+: `{'action': ..., 'nonce': ...}` where the action is `fitContent`,
+  `scrollToRealTime`, `resetTimeScale` or `scrollToPosition`. The last also
+  takes `position` and `animated`.
 
-### `seriesPriceLines`
+`dataAction`
+: `{'action': ..., 'seriesId': ..., 'nonce': ...}` where the action is
+  `dataByIndex` (with `logicalIndex`, optionally `mismatchDirection`),
+  `lastValue` (optionally `globalLast`), or `pop` (with `count`). Answers on
+  `dataResult`.
 
-Sets the additional horizontal price lines associated with a particular series.
+`crosshairPosition`
+: `{'seriesId': ..., 'time': ..., 'price': ...}` places the crosshair without a
+  pointer. `None` clears it. Deliberately emits no `crosshair` report, so two
+  charts can drive each other.
 
-See [original documentation here](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/PriceLineOptions) for all possible price lines options.
+`screenshotRequest`
+: An integer. Any change captures the canvas; the PNG arrives on `screenshot`.
+  `0` means no request.
 
-**Example**
-```python
-seriesPriceLines = [[{'price': 10, 'color': '#2962FF', 'lineStyle': 0, 'title': 'MAX PRICE', 'axisLabelVisible': True}]]
-```
+## Reports
 
-## Chart and Series Styling Options
+Read-only. The component writes these; use them as callback `Input`s.
 
-### `chartOptions`
+`crosshair`, `click`, `dblClick`
+: `{'time', 'logical', 'paneIndex', 'point', 'seriesData', 'price',
+  'hoveredSeriesId', 'hoveredObjectId'}`. `seriesData` and `price` are keyed by
+  your series `id`. See [the mouse payload](callbacks.md#the-mouse-payload).
 
-Sets options for the chart in general. `chartsData` is expected to be one(nested) dict that contains all chart options. One can explore the possible options in the [original documentation here](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/ChartOptions).
+`barsInLogicalRange`
+: `{'barsBefore', 'barsAfter', 'from', 'to', 'seriesId'}`, describing the first
+  entry in `series`. A negative `barsBefore` means the user has scrolled past
+  the start of the data.
 
-```{note}
-A very few chart options is not available due to non-serializability of that option in the original charting library.
-Currently, the following configurations is not possible:
-- Key `tickMarkFormatter` in `timescale` property.
-```
+`dataResult`
+: The answer to the last `dataAction`. Always carries `action` and `seriesId`,
+  plus `data` for `dataByIndex`, `noData`/`price`/`color` for `lastValue`, or
+  `count`/`removed` for `pop`. `removed` is newest first.
 
-Remarks: Keys `priceFormatter` and `tickFormatter` in `localization` property accepts a string of Javascript function as parameter. For example, `{'localization': {'priceFormatter': "(function(price) { return '$' + price.toFixed(2); })""}}` specifies prices on the chart to be displayed with a dollar sign and rounded to 2 decimal places. See [here](https://tradingview.github.io/lightweight-charts/docs/3.8/api#timeformatterfn) and [here](https://tradingview.github.io/lightweight-charts/docs/3.8/api#priceformatterfn) for more information on time formatter and price formatter.
+`screenshot`
+: The most recent capture, as a PNG data URI.
 
-### `seriesOptions`
+`fullChartOptions`, `fullSeriesOptions`, `fullPriceScaleOptions`, `fullTimeScaleOptions`
+: The options actually in force, defaults filled in. `fullSeriesOptions` is
+  keyed by series id. Useful for checking whether an option landed.
 
-Sets options for each of the series. `seriesOptions` is expected to be a list of (nested) dict that specifies option for each series. One can explore the possible options in the [original documentation here](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/SeriesOptionsCommon).
+`priceScaleWidth`, `timeScaleWidth`, `timeScaleHeight`
+: Scale dimensions in pixels, for aligning something beside the chart. Behind
+  `subscribeSize`.
 
-The are extra possible options specific to each series types:
-- [Extra options for type `bar`](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/BarStyleOptions)
-- [Extra options for type `candlestick`](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/CandlestickStyleOptions)
-- [Extra options for type `area`](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/AreaStyleOptions)
-- [Extra options for type `baseline`](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/BaselineStyleOptions)
-- [Extra options for type `line`](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/LineStyleOptions)
-- [Extra options for type `histogram`](https://tradingview.github.io/lightweight-charts/docs/3.8/api/interfaces/HistogramStyleOptions)
+## Two-way
 
-### `width`
+Set to drive, read to follow. The component ignores a value it has just
+reported, so echoing one back does not fight the user.
 
-Sets the width of the `div` associated with the chart.
+`visibleRange`
+: `{'from': ..., 'to': ...}` in the same form your data uses. Reported only when
+  `subscribeVisibleRange` is on. The library clamps a requested range to the
+  data that exists, so what comes back often differs from what you set.
 
-### `height`
+`visibleLogicalRange`
+: `{'from': ..., 'to': ...}` in bar indices, which may be fractional and may
+  fall outside the data. Setting this and `visibleRange` in one callback is
+  ambiguous; this one wins.
 
-Sets the height of the `div` associated with the chart.
+## Series dictionary
+
+The entries of the `series` list. Covered fully in [Series and data](series).
+
+`id`
+: **Required.** Unique within the list. Keys every payload that mentions this
+  series, and decides whether an update is applied in place or the series is
+  recreated.
+
+`type`
+: **Required.** `bar`, `candlestick`, `area`, `baseline`, `line`, `histogram`.
+  `Tvlwy` accepts only `line` and `area`.
+
+`data`
+: **Required.** Points, ascending by `time` and unique. `{'time', 'open',
+  'high', 'low', 'close'}` for OHLC types, `{'time', 'value'}` otherwise. A
+  point with only `time` is whitespace and draws a gap. A `color` on a point
+  overrides the series colour.
+
+`options`
+: Series styling, passed through.
+
+`priceScaleOptions`
+: Options for this series' price scale. Where `scaleMargins` belongs.
+
+`markers`
+: List of `{'time', 'position', 'shape', 'color'}`, optionally `text`, `size`,
+  `id`. `time` must match a point in this series. `position` may instead be
+  `atPriceTop`, `atPriceBottom` or `atPriceMiddle`, with a `price`.
+
+`priceLines`
+: List of `{'price', ...}`. Declarative: drop an entry to remove the line.
+
+`upDownMarkers`
+: `{'positiveColor', 'negativeColor', 'updateVisibilityDuration'}`, or `{}` for
+  defaults. Line and area only. Marks a bar the chart already holds when a
+  `tick` revises it.
+
+`pane`
+: Pane index, from 0. An index one past the last pane creates it.
 
 ## Enums
 
-Some useful enums provided in the original charting library are translated to Python Enum classes. The enum classes are included in this package. For example, by doing
-```python
-from dash_tvlwc.types import ColorType
-```
-you can represent chart the color types `'solid'` and `'gradient'` by `ColorType.Solid` and `ColorType.VerticalGradient` respectively. It is just optional to use these enum representations of strings in when setting chart properties, and you can achieve the same result by setting configurations in plain string. The existence of enums is just for developers who prefers enums for code organization.
+`dash_tvlwc.types` mirrors the library's enums for readability. Plain values
+work identically.
 
 ```python
-chart_options = {
-    'layout': {
-        'background': {
-            'type': ColorType.Solid
-        }
-    }
-}
-
-# is equivalent to
-chart_options = {
-    'layout': {
-        'background': {
-            'type': 'solid'
-        }
-    }
-}
-```
-
-Additionally, this package provides an enum class that is not found in the original charting library that deals with the series type:
-
-```python
-from dash_tvlwc.types import SeriesType
-
-# set the seriesTypes
-series_types = [SeriesType.Bar]
-```
-
-There are 6 possible enums for this additional class, which corresponds to the six types of series supported by the original chart library:
-
-```python
-class SeriesType(StrEnum):
-    Bar = 'bar'
-    Candlestick = 'candlestick'
-    Area = 'area'
-    Baseline = 'baseline'
-    Line = 'line'
-    Histogram = 'histogram'
+from dash_tvlwc.types import (
+    ColorType, CrosshairMode, LastPriceAnimationMode, LineStyle, LineType,
+    MismatchDirection, PriceLineSource, PriceScaleMode, SeriesType,
+    TickMarkType, TrackingModeExitMode,
+)
 ```

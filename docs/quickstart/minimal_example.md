@@ -1,57 +1,86 @@
-# Minimal example
+# Your first chart
 
-This example shows the most simple way to put up a chart using dash_tvlwc.
+The smallest app that draws something.
 
-1. Import dependencies
+## 1. Install
+
+```
+pip install dash_tvlwc
+```
+
+## 2. Write the app
+
 ```python
 import dash
 from dash import html
 import dash_tvlwc
-```
 
-2. Make some random candlestick data and line plot data
-```python
 candlestick_data = [
-    {'close': 97.56, 'high': 101.29, 'low': 95.07, 'open': 100, 'time': '2021-01-01'},
-    {'close': 96.06, 'high': 99.06, 'low': 95.17, 'open': 97.56, 'time': '2021-01-02'},
-    {'close': 92.06, 'high': 98.39, 'low': 90.72, 'open': 96.06, 'time': '2021-01-03'},
-    {'close': 95.74, 'high': 97.87, 'low': 89.75, 'open': 92.06, 'time': '2021-01-04'},
-    {'close': 92.44, 'high': 97.5, 'low': 88.56, 'open': 95.74, 'time': '2021-01-05'},
-    {'close': 89.31, 'high': 93.1, 'low': 85.20, 'open': 92.44, 'time': '2021-01-06'},
-    {'close': 85.10, 'high': 93.08, 'low': 82.23, 'open': 89.31, 'time': '2021-01-07'},
-    {'close': 81.87, 'high': 88.34, 'low': 77.97, 'open': 85.10, 'time': '2021-01-08'},
-    {'close': 79.55, 'high': 82.44, 'low': 76.08, 'open': 81.87, 'time': '2021-01-09'},
-    {'close': 82.74, 'high': 84.01, 'low': 78, 'open': 79.55, 'time': '2021-01-10'}
+    {'time': '2026-01-01', 'open': 100, 'high': 101.3, 'low': 95.1, 'close': 97.6},
+    {'time': '2026-01-02', 'open': 97.6, 'high': 99.1, 'low': 95.2, 'close': 96.1},
+    {'time': '2026-01-03', 'open': 96.1, 'high': 98.4, 'low': 90.7, 'close': 92.1},
+    {'time': '2026-01-04', 'open': 92.1, 'high': 97.9, 'low': 89.8, 'close': 95.7},
+    {'time': '2026-01-05', 'open': 95.7, 'high': 97.5, 'low': 88.6, 'close': 92.4},
 ]
 
 line_data = [
-    {'time': '2021-01-01', 'value': 100.35},
-    {'time': '2021-01-02', 'value': 97.09},
-    {'time': '2021-01-03', 'value': 95.74},
-    {'time': '2021-01-04', 'value': 98.72},
-    {'time': '2021-01-05', 'value': 100.3},
-    {'time': '2021-01-06', 'value': 95.8},
-    {'time': '2021-01-07', 'value': 91.22},
-    {'time': '2021-01-08', 'value': 94.26},
-    {'time': '2021-01-09', 'value': 94.9},
-    {'time': '2021-01-10', 'value': 94.85}
+    {'time': '2026-01-01', 'value': 100.4},
+    {'time': '2026-01-02', 'value': 97.1},
+    {'time': '2026-01-03', 'value': 95.7},
+    {'time': '2026-01-04', 'value': 98.7},
+    {'time': '2026-01-05', 'value': 100.3},
 ]
-```
 
-3. Initialize Dash app and add the Tvlwc component
-```python
 app = dash.Dash(__name__)
-app.layout = html.Div(children=[
+app.layout = html.Div([
     dash_tvlwc.Tvlwc(
-        seriesData=[candlestick_data, line_data],
-        seriesTypes=['candlestick', 'line'],
+        id='chart',
+        series=[
+            {'id': 'price', 'type': 'candlestick', 'data': candlestick_data},
+            {'id': 'signal', 'type': 'line', 'data': line_data},
+        ],
+        width='100%',
+        height=400,
+        # With only a handful of points the default view sits at the right
+        # edge and looks squashed. Fitting once on load spreads them across
+        # the width. A few hundred bars need no such help.
+        timeScaleAction={'action': 'fitContent', 'nonce': 1},
     ),
 ])
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run()
 ```
 
-4. Run the app by `python app2.py`. The app should be running on `localhost:8050/`. You should see the plot:
+## 3. Run it
 
-![Minimal example](./../_static/minimal_example.png "Minimal example")
+```
+python app.py
+```
+
+The app is at `localhost:8050`, and looks like this:
+
+![Two series on one chart](../_static/minimal_example.png)
+
+## What to notice
+
+**Each series is one dictionary.** `id`, `type` and `data` are required; add
+more dictionaries to the list to draw more series on the same chart.
+
+**The `id` is yours to choose**, and it matters. It is how the component knows
+that the series you send next is the same one, so it can update it in place
+rather than recreating it, and it is the key every callback payload uses to
+refer to that series.
+
+**Data is a list of dictionaries, sorted by `time`.** Candlesticks and bars take
+`open`, `high`, `low`, `close`; every other type takes `value`.
+
+**Times can be date strings, `{'year', 'month', 'day'}` dictionaries, or UTC
+timestamps in seconds.** Pick one form per series and stay with it. Whatever you
+send is what comes back in callback payloads.
+
+## Next
+
+- Colours, grids and axes: [Chart and series options](../options)
+- Markers, price lines, sub-plots: [Series and data](../series)
+- Making it react: [Callbacks](callback_example)
