@@ -69,6 +69,16 @@ class TrackingModeExitMode(StrEnum):
 
 # Additional for series types
 # These Enums do not exist in original chart library but only in this Dash component
+class MismatchDirection(StrEnum):
+    """Search direction for `dataAction` with action `dataByIndex`, when no bar
+    sits at the requested index. Spelt as strings rather than the upstream
+    enum's -1/0/1, because this vocabulary is read and written in callbacks
+    rather than passed through to chart options."""
+    NearestLeft: str = 'nearestLeft'    # Answer with the closest bar before the index
+    NoSearch: str = 'none'              # Answer with None
+    NearestRight: str = 'nearestRight'  # Answer with the closest bar after the index
+
+
 class SeriesType(StrEnum):
     Bar: str = 'bar'                    # Similar to candlestick series but OHLC values represented in bar
     Candlestick: str = 'candlestick'    # Candlestick series with OHLC values

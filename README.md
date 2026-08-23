@@ -31,12 +31,12 @@ An interactive demo hosted and available [here](http://tysonwu.pythonanywhere.co
 
 ### Chart and series style options
 - 1-to-1 chart and series option capability as in original lightweight chart
-- See `./example/options.py`
+- See `./examples/options.py`
 ![Options](./docs/_static/options.png "Options")
 
 ### Interactivity with [Dash callbacks](https://dash.plotly.com/basic-callbacks)
 - Modify data or styles on any triggers
-- See `./example/interactivity.py`
+- See `./examples/interactivity.py`
 ![Interactivity](./docs/_static/interactivity.gif "Interactivity")
 
 ### Minimal example
@@ -180,13 +180,15 @@ $ npm run build
 This runs two stages, which can also be run separately:
 
 - `npm run build:js` bundles `src/lib` into `dash_tvlwc/dash_tvlwc.min.js` with webpack.
-- `npm run build:backends` generates the Python, R, and Julia classes from `src/lib/components/Tvlwc.tsx`. The virtual environment must be active so that `dash-generate-components` is on `PATH`.
+- `npm run build:backends` generates the Python, R, and Julia classes from every component in `src/lib/components/`: `Tvlwc` on a time axis, `Tvlwo` on a price axis, and `Tvlwy` on a maturity axis. The virtual environment must be active so that `dash-generate-components` is on `PATH`.
+
+The three components share one implementation. `src/lib/core/` holds the chart itself, generic in what sits on the horizontal scale; a file in `src/lib/components/` supplies a constructor, the series types that chart accepts, and the prop defaults. Anything in `src/lib/components/` is scanned as a component, so shared code belongs in `src/lib/core/`.
 
 `npm run typecheck` runs `tsc --noEmit` over the TypeScript sources without producing a bundle.
 
 ### Try the component in a Dash app
 
-The component currently accepts `id`, `chartOptions`, `width`, and `height`. Series props are not yet wired up, so the chart renders as an empty pane with axes and no data.
+The snippet below renders an empty pane with axes. Add a `series` list to draw something; the `## References: Chart properties` section above still describes the 0.1.1 prop schema and is being rewritten.
 
 Save the following as `app.py` in the repository root, so that `import dash_tvlwc` picks up your local build rather than an installed copy:
 
@@ -227,4 +229,14 @@ This serves `src/demo` through webpack-dev-server at http://localhost:8080 and r
 
 ### Bundled examples
 
-The apps under `demo/` and `example/` target the earlier prop schema and raise `TypeError: ... received an unexpected keyword argument: 'seriesTypes'` against the current component. They are kept as references and are updated as the series props are reintroduced.
+The apps under `examples/` and `demo/` run against the current component. Each one needs the repository root on `PYTHONPATH`, because they import `theme` and `data_generator` as siblings:
+
+```
+$ PYTHONPATH=. python examples/options.py
+```
+
+- `examples/options.py` - chart and series styling, one panel per option group.
+- `examples/interactivity.py` - callbacks driving and reading the chart.
+- `examples/v5_features.py` - every capability added for v5, one panel each.
+- `examples/chart_types.py` - `Tvlwc`, `Tvlwo` and `Tvlwy` side by side.
+- `demo/app.py` - the hosted demo.

@@ -5,7 +5,7 @@ Callback payloads report times back in the same form they were given in, so a
 series built from strings reports strings.
 """
 import random
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 
 def _dates(t0, n):
@@ -35,4 +35,19 @@ def generate_random_series(v0, ret=0.05, n=500, t0='2021-01-01'):
     for t in _dates(t0, n):
         value = value * (1 + random.uniform(-ret, ret))
         out.append({'time': t, 'value': value})
+    return out
+
+
+def generate_intraday_series(v0, n, ret=0.002, t0='2021-01-01', step_seconds=60):
+    """Minute-resolution data for large-dataset demos.
+
+    Times are integer UTC timestamps in seconds rather than date strings. A few
+    hundred thousand daily bars would span centuries, which is not what dense
+    financial data looks like; a few hundred thousand minutes is a few months.
+    """
+    start = int(datetime.fromisoformat(t0).replace(tzinfo=timezone.utc).timestamp())
+    out, value = [], v0
+    for i in range(n):
+        value = value * (1 + random.uniform(-ret, ret))
+        out.append({'time': start + i * step_seconds, 'value': round(value, 2)})
     return out

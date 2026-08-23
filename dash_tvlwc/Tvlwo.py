@@ -20,11 +20,13 @@ ComponentType = typing.Union[
 ]
 
 
-class Tvlwc(Component):
-    """A Tvlwc component.
-Tradingview Lightweight Chart on a time axis. Data points carry `time` as a
-`YYYY-MM-DD` string, a `{year, month, day}` object, or a UTC timestamp in
-seconds, and every payload reports times back in the form they were given in.
+class Tvlwo(Component):
+    """A Tvlwo component.
+Tradingview Lightweight Chart on a price axis, for option payoff and
+volatility curves. Points carry `time` as a number, which the chart reads as
+a position on the horizontal price scale rather than as a moment, so a strike
+of 105.5 is written `{'time': 105.5, 'value': ...}`. Points must still be
+unique and ascending in `time`.
 
 Keyword arguments:
 
@@ -40,20 +42,25 @@ Keyword arguments:
     `subscribeVisibleRange` is True.
 
 - chartOptions (dict; default EMPTY_CHART_OPTIONS):
-    Object containing all chart options. Mirrors the `ChartOptions`
-    interface of the underlying charting library. Option values that
-    must be functions, such as `localization.priceFormatter` and
-    `timeScale.tickMarkFormatter`, are given as the string name of a
-    function registered on `window.dashTvlwcFunctions`.
+    Object containing all chart options. Mirrors the
+    `PriceChartOptions` interface of the underlying charting library,
+    which is the ordinary chart options object with one addition:
+    `localization.precision` sets how many decimal places the
+    horizontal axis labels carry.  There is no
+    `timeScale.tickMarkFormatter` here. That option belongs to time
+    charts; the horizontal axis is formatted through
+    `localization.precision` instead. Every other `timeScale` option
+    applies unchanged, including `barSpacing`, `minBarSpacing`, the
+    borders and the conflation group.  Option values that must be
+    functions, such as `localization.priceFormatter`, are given as the
+    string name of a function registered on
+    `window.dashTvlwcFunctions`.
 
     `chartOptions` is a dict with keys:
 
-    - timeScale (boolean | number | string | dict | list; optional):
-        Extended time scale options with option to override
-        tickMarkFormatter.
-
     - localization (boolean | number | string | dict | list; optional):
-        Localization options.
+        Localization options for formatting price values and other
+        chart elements.
 
     - width (number; optional):
         Width of the chart in pixels @,defaultValue,If `0` (default)
@@ -106,6 +113,9 @@ Keyword arguments:
 
     - overlayPriceScales (boolean | number | string | dict | list; optional):
         Overlay price scale options.
+
+    - timeScale (boolean | number | string | dict | list; optional):
+        Time scale options.
 
     - crosshair (boolean | number | string | dict | list; optional):
         The crosshair shows the intersection of the price and time
@@ -384,7 +394,7 @@ Keyword arguments:
     _children_props: typing.List[str] = []
     _base_nodes = ['children']
     _namespace = 'dash_tvlwc'
-    _type = 'Tvlwc'
+    _type = 'Tvlwo'
     Series = TypedDict(
         "Series",
             {
@@ -411,7 +421,6 @@ Keyword arguments:
     ChartOptions = TypedDict(
         "ChartOptions",
             {
-            "timeScale": NotRequired[typing.Any],
             "localization": NotRequired[typing.Any],
             "width": NotRequired[typing.Union[NumberType]],
             "height": NotRequired[typing.Union[NumberType]],
@@ -421,6 +430,7 @@ Keyword arguments:
             "rightPriceScale": NotRequired[typing.Any],
             "defaultVisiblePriceScaleId": NotRequired[Literal[None, "left", "right"]],
             "overlayPriceScales": NotRequired[typing.Any],
+            "timeScale": NotRequired[typing.Any],
             "crosshair": NotRequired[typing.Any],
             "grid": NotRequired[typing.Any],
             "handleScroll": NotRequired[typing.Union[bool]],
@@ -479,6 +489,6 @@ Keyword arguments:
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        super(Tvlwc, self).__init__(**args)
+        super(Tvlwo, self).__init__(**args)
 
-setattr(Tvlwc, "__init__", _explicitize_args(Tvlwc.__init__))
+setattr(Tvlwo, "__init__", _explicitize_args(Tvlwo.__init__))

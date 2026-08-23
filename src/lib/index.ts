@@ -1,4 +1,5 @@
-/* eslint-disable import/prefer-default-export */
 import Tvlwc from './components/Tvlwc';
+import Tvlwo from './components/Tvlwo';
+import Tvlwy from './components/Tvlwy';
 
-export {Tvlwc};
+export {Tvlwc, Tvlwo, Tvlwy};

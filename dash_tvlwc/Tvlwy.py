@@ -20,11 +20,14 @@ ComponentType = typing.Union[
 ]
 
 
-class Tvlwc(Component):
-    """A Tvlwc component.
-Tradingview Lightweight Chart on a time axis. Data points carry `time` as a
-`YYYY-MM-DD` string, a `{year, month, day}` object, or a UTC timestamp in
-seconds, and every payload reports times back in the form they were given in.
+class Tvlwy(Component):
+    """A Tvlwy component.
+Tradingview Lightweight Chart on a maturity axis, for yield curves. Points
+carry `time` as a number of `chartOptions.yieldCurve.baseResolution` units
+from `startTimeRange`, which defaults to months from zero, so a ten-year
+point is written `{'time': 120, 'value': 4.3}`. The chart spaces maturities
+by that value rather than evenly, which is what makes the short end of a
+curve read correctly. Points must be unique and ascending in `time`.
 
 Keyword arguments:
 
@@ -40,17 +43,30 @@ Keyword arguments:
     `subscribeVisibleRange` is True.
 
 - chartOptions (dict; default EMPTY_CHART_OPTIONS):
-    Object containing all chart options. Mirrors the `ChartOptions`
-    interface of the underlying charting library. Option values that
-    must be functions, such as `localization.priceFormatter` and
-    `timeScale.tickMarkFormatter`, are given as the string name of a
-    function registered on `window.dashTvlwcFunctions`.
+    Object containing all chart options. Mirrors the
+    `YieldCurveChartOptions` interface of the underlying charting
+    library: the ordinary chart options object plus a `yieldCurve`
+    group of `baseResolution` (the smallest time unit, default 1
+    month), `minimumTimeRange` (default 120, so ten years are always
+    in view) and `startTimeRange` (default 0).  To label the maturity
+    axis, give `localization.timeFormatter` the string name of a
+    function registered on `window.dashTvlwcFunctions`. It receives
+    the maturity in `baseResolution` units and returns the label;
+    without one the axis falls back to `6M` and `5Y` style defaults.
+    `yieldCurve.formatTime` looks like the option for that and is not.
+    The upstream typings declare it, but lightweight-charts 5.2.1
+    never reads it, so setting it changes nothing. Passing it here
+    logs a warning pointing at `localization.timeFormatter` rather
+    than failing silently.  There is no `timeScale.tickMarkFormatter`
+    here either; that option belongs to time charts. Every other
+    `timeScale` option applies unchanged.
 
     `chartOptions` is a dict with keys:
 
-    - timeScale (boolean | number | string | dict | list; optional):
-        Extended time scale options with option to override
-        tickMarkFormatter.
+    - yieldCurve (boolean | number | string | dict | list; optional):
+        Yield curve specific options. This object contains all the
+        settings related to how the yield curve is displayed and
+        behaves.
 
     - localization (boolean | number | string | dict | list; optional):
         Localization options.
@@ -106,6 +122,9 @@ Keyword arguments:
 
     - overlayPriceScales (boolean | number | string | dict | list; optional):
         Overlay price scale options.
+
+    - timeScale (boolean | number | string | dict | list; optional):
+        Time scale options.
 
     - crosshair (boolean | number | string | dict | list; optional):
         The crosshair shows the intersection of the price and time
@@ -267,7 +286,7 @@ Keyword arguments:
         updates and to key the `crosshair`, `click` and
         `fullSeriesOptions` payloads.
 
-    - type (a value equal to: 'area', 'bar', 'baseline', 'candlestick', 'histogram', 'line'; required):
+    - type (a value equal to: 'area', 'line'; required):
         Which kind of series to draw. The names this chart accepts are
         the ones listed on this field's type; `bar` and `candlestick`
         need OHLC points, and the rest take a single `value`.
@@ -384,12 +403,12 @@ Keyword arguments:
     _children_props: typing.List[str] = []
     _base_nodes = ['children']
     _namespace = 'dash_tvlwc'
-    _type = 'Tvlwc'
+    _type = 'Tvlwy'
     Series = TypedDict(
         "Series",
             {
             "id": str,
-            "type": Literal["area", "bar", "baseline", "candlestick", "histogram", "line"],
+            "type": Literal["area", "line"],
             "data": typing.Sequence[typing.Any],
             "options": NotRequired[typing.Any],
             "priceScaleOptions": NotRequired[typing.Any],
@@ -411,7 +430,7 @@ Keyword arguments:
     ChartOptions = TypedDict(
         "ChartOptions",
             {
-            "timeScale": NotRequired[typing.Any],
+            "yieldCurve": NotRequired[typing.Any],
             "localization": NotRequired[typing.Any],
             "width": NotRequired[typing.Union[NumberType]],
             "height": NotRequired[typing.Union[NumberType]],
@@ -421,6 +440,7 @@ Keyword arguments:
             "rightPriceScale": NotRequired[typing.Any],
             "defaultVisiblePriceScaleId": NotRequired[Literal[None, "left", "right"]],
             "overlayPriceScales": NotRequired[typing.Any],
+            "timeScale": NotRequired[typing.Any],
             "crosshair": NotRequired[typing.Any],
             "grid": NotRequired[typing.Any],
             "handleScroll": NotRequired[typing.Union[bool]],
@@ -479,6 +499,6 @@ Keyword arguments:
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        super(Tvlwc, self).__init__(**args)
+        super(Tvlwy, self).__init__(**args)
 
-setattr(Tvlwc, "__init__", _explicitize_args(Tvlwc.__init__))
+setattr(Tvlwy, "__init__", _explicitize_args(Tvlwy.__init__))

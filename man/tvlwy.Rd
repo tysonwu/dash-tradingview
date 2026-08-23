@@ -1,16 +1,16 @@
 % Auto-generated: do not edit by hand
-\name{tvlwc}
+\name{tvlwy}
 
-\alias{tvlwc}
+\alias{tvlwy}
 
-\title{Tvlwc component}
+\title{Tvlwy component}
 
 \description{
-Tradingview Lightweight Chart on a time axis. Data points carry `time` as a `YYYY-MM-DD` string, a `{year, month, day}` object, or a UTC timestamp in seconds, and every payload reports times back in the form they were given in.
+Tradingview Lightweight Chart on a maturity axis, for yield curves. Points carry `time` as a number of `chartOptions.yieldCurve.baseResolution` units from `startTimeRange`, which defaults to months from zero, so a ten-year point is written `{'time': 120, 'value': 4.3}`. The chart spaces maturities by that value rather than evenly, which is what makes the short end of a curve read correctly. Points must be unique and ascending in `time`.
 }
 
 \usage{
-tvlwc(id=NULL, barsInLogicalRange=NULL, chartOptions=NULL,
+tvlwy(id=NULL, barsInLogicalRange=NULL, chartOptions=NULL,
 click=NULL, crosshair=NULL, crosshairPosition=NULL,
 dataAction=NULL, dataResult=NULL, dblClick=NULL,
 fullChartOptions=NULL, fullPriceScaleOptions=NULL,
@@ -34,9 +34,10 @@ and names it in `seriesId`. A negative `barsBefore` means the user has
 scrolled past the start of the data, which is the signal to fetch more
 history. Written only when `subscribeVisibleRange` is true.}
 
-\item{chartOptions}{Lists containing elements 'timescale', 'localization', 'width', 'height', 'autosize', 'layout', 'leftpricescale', 'rightpricescale', 'defaultvisiblepricescaleid', 'overlaypricescales', 'crosshair', 'grid', 'handlescroll', 'handlescale', 'kineticscroll', 'trackingmode', 'adddefaultpane', 'hoveredseriesontop'.
+\item{chartOptions}{Lists containing elements 'yieldcurve', 'localization', 'width', 'height', 'autosize', 'layout', 'leftpricescale', 'rightpricescale', 'defaultvisiblepricescaleid', 'overlaypricescales', 'timescale', 'crosshair', 'grid', 'handlescroll', 'handlescale', 'kineticscroll', 'trackingmode', 'adddefaultpane', 'hoveredseriesontop'.
 those elements have the following types:
-  - timescale (logical | numeric | character | named list | unnamed list; optional): extended time scale options with option to override tickmarkformatter
+  - yieldcurve (logical | numeric | character | named list | unnamed list; optional): yield curve specific options.
+this object contains all the settings related to how the yield curve is displayed and behaves.
   - localization (logical | numeric | character | named list | unnamed list; optional): localization options.
   - width (numeric; optional): width of the chart in pixels
 @,defaultvalue,if `0` (default) or none value provided, then a size of the widget will be calculated based its container's size.
@@ -68,6 +69,7 @@ this affects behaviors that depend on the pane's default side, such as:
 - crosshair price coordinate conversion and magnet snapping
 @,defaultvalue,`'right'`
   - overlaypricescales (logical | numeric | character | named list | unnamed list; optional): overlay price scale options
+  - timescale (logical | numeric | character | named list | unnamed list; optional): time scale options
   - crosshair (logical | numeric | character | named list | unnamed list; optional): the crosshair shows the intersection of the price and time scale values at any point on the chart.
   - grid (logical | numeric | character | named list | unnamed list; optional): a grid is represented in the chart background as a vertical and horizontal lines drawn at the levels of visible marks of price and the time scales.
   - handlescroll (logical; optional): scroll options, or a boolean flag that enables/disables scrolling
@@ -82,11 +84,24 @@ disable this option when you want to create a chart with no panes and add them m
 
 this only affects drawing and hit-testing order while the series is hovered; it doesn't
 change the stored series order.
-@,defaultvalue,`true`. Object containing all chart options. Mirrors the `ChartOptions` interface
-of the underlying charting library. Option values that must be functions,
-such as `localization.priceFormatter` and `timeScale.tickMarkFormatter`,
-are given as the string name of a function registered on
-`window.dashTvlwcFunctions`.}
+@,defaultvalue,`true`. Object containing all chart options. Mirrors the `YieldCurveChartOptions`
+interface of the underlying charting library: the ordinary chart options
+object plus a `yieldCurve` group of `baseResolution` (the smallest time
+unit, default 1 month), `minimumTimeRange` (default 120, so ten years are
+always in view) and `startTimeRange` (default 0).
+
+To label the maturity axis, give `localization.timeFormatter` the string
+name of a function registered on `window.dashTvlwcFunctions`. It receives
+the maturity in `baseResolution` units and returns the label; without one
+the axis falls back to `6M` and `5Y` style defaults.
+
+`yieldCurve.formatTime` looks like the option for that and is not. The
+upstream typings declare it, but lightweight-charts 5.2.1 never reads it,
+so setting it changes nothing. Passing it here logs a warning pointing at
+`localization.timeFormatter` rather than failing silently.
+
+There is no `timeScale.tickMarkFormatter` here either; that option belongs
+to time charts. Every other `timeScale` option applies unchanged.}
 
 \item{click}{Logical | numeric | character | named list | unnamed list. Last-clicked chart position; read-only. Same shape as `crosshair`.
 Written only when `subscribeClick` is true.}
@@ -188,7 +203,7 @@ with CORS headers if screenshots matter.}
 those elements have the following types:
   - id (character; required): stable identity for this series. used to key incremental updates and to
 key the `crosshair`, `click` and `fullseriesoptions` payloads.
-  - type (a value equal to: 'area', 'bar', 'baseline', 'candlestick', 'histogram', 'line'; required): which kind of series to draw. the names this chart accepts are the ones
+  - type (a value equal to: 'area', 'line'; required): which kind of series to draw. the names this chart accepts are the ones
 listed on this field's type; `bar` and `candlestick` need ohlc points,
 and the rest take a single `value`.
   - data (list of logical | numeric | character | named list | unnamed lists; required): data points. items carrying only `time` are whitespace and render as gaps.

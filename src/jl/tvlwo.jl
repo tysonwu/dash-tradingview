@@ -1,14 +1,16 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
-export tvlwc
+export tvlwo
 
 """
-    tvlwc(;kwargs...)
+    tvlwo(;kwargs...)
 
-A Tvlwc component.
-Tradingview Lightweight Chart on a time axis. Data points carry `time` as a
-`YYYY-MM-DD` string, a `{year, month, day}` object, or a UTC timestamp in
-seconds, and every payload reports times back in the form they were given in.
+A Tvlwo component.
+Tradingview Lightweight Chart on a price axis, for option payoff and
+volatility curves. Points carry `time` as a number, which the chart reads as
+a position on the horizontal price scale rather than as a moment, so a strike
+of 105.5 is written `{'time': 105.5, 'value': ...}`. Points must still be
+unique and ascending in `time`.
 Keyword arguments:
 - `id` (String; optional): The ID of this component.
 - `barsInLogicalRange` (Bool | Real | String | Dict | Array; optional): Bars available around the visible range, as `{barsBefore, barsAfter,
@@ -16,14 +18,22 @@ from, to, seriesId}`; read-only. Describes the first entry in `series`,
 and names it in `seriesId`. A negative `barsBefore` means the user has
 scrolled past the start of the data, which is the signal to fetch more
 history. Written only when `subscribeVisibleRange` is true.
-- `chartOptions` (optional): Object containing all chart options. Mirrors the `ChartOptions` interface
-of the underlying charting library. Option values that must be functions,
-such as `localization.priceFormatter` and `timeScale.tickMarkFormatter`,
-are given as the string name of a function registered on
-`window.dashTvlwcFunctions`.. chartOptions has the following type: lists containing elements 'timeScale', 'localization', 'width', 'height', 'autoSize', 'layout', 'leftPriceScale', 'rightPriceScale', 'defaultVisiblePriceScaleId', 'overlayPriceScales', 'crosshair', 'grid', 'handleScroll', 'handleScale', 'kineticScroll', 'trackingMode', 'addDefaultPane', 'hoveredSeriesOnTop'.
+- `chartOptions` (optional): Object containing all chart options. Mirrors the `PriceChartOptions`
+interface of the underlying charting library, which is the ordinary chart
+options object with one addition: `localization.precision` sets how many
+decimal places the horizontal axis labels carry.
+
+There is no `timeScale.tickMarkFormatter` here. That option belongs to
+time charts; the horizontal axis is formatted through
+`localization.precision` instead. Every other `timeScale` option applies
+unchanged, including `barSpacing`, `minBarSpacing`, the borders and the
+conflation group.
+
+Option values that must be functions, such as
+`localization.priceFormatter`, are given as the string name of a function
+registered on `window.dashTvlwcFunctions`.. chartOptions has the following type: lists containing elements 'localization', 'width', 'height', 'autoSize', 'layout', 'leftPriceScale', 'rightPriceScale', 'defaultVisiblePriceScaleId', 'overlayPriceScales', 'timeScale', 'crosshair', 'grid', 'handleScroll', 'handleScale', 'kineticScroll', 'trackingMode', 'addDefaultPane', 'hoveredSeriesOnTop'.
 Those elements have the following types:
-  - `timeScale` (Bool | Real | String | Dict | Array; optional): Extended time scale options with option to override tickMarkFormatter
-  - `localization` (Bool | Real | String | Dict | Array; optional): Localization options.
+  - `localization` (Bool | Real | String | Dict | Array; optional): Localization options for formatting price values and other chart elements.
   - `width` (Real; optional): Width of the chart in pixels
 @,defaultValue,If `0` (default) or none value provided, then a size of the widget will be calculated based its container's size.
   - `height` (Real; optional): Height of the chart in pixels
@@ -54,6 +64,7 @@ This affects behaviors that depend on the pane's default side, such as:
 - crosshair price coordinate conversion and magnet snapping
 @,defaultValue,`'right'`
   - `overlayPriceScales` (Bool | Real | String | Dict | Array; optional): Overlay price scale options
+  - `timeScale` (Bool | Real | String | Dict | Array; optional): Time scale options
   - `crosshair` (Bool | Real | String | Dict | Array; optional): The crosshair shows the intersection of the price and time scale values at any point on the chart.
   - `grid` (Bool | Real | String | Dict | Array; optional): A grid is represented in the chart background as a vertical and horizontal lines drawn at the levels of visible marks of price and the time scales.
   - `handleScroll` (Bool; optional): Scroll options, or a boolean flag that enables/disables scrolling
@@ -221,9 +232,9 @@ back will often not equal what was set.
 for text. `None` removes it.
 - `width` (String | Real; optional): Sets width of the parent div of the chart.
 """
-function tvlwc(; kwargs...)
+function tvlwo(; kwargs...)
         available_props = Symbol[:id, :barsInLogicalRange, :chartOptions, :click, :crosshair, :crosshairPosition, :dataAction, :dataResult, :dblClick, :fullChartOptions, :fullPriceScaleOptions, :fullSeriesOptions, :fullTimeScaleOptions, :height, :paneOptions, :priceScaleWidth, :reportThrottle, :screenshot, :screenshotRequest, :series, :subscribeClick, :subscribeCrosshair, :subscribeDblClick, :subscribeSize, :subscribeVisibleRange, :tick, :timeScaleAction, :timeScaleHeight, :timeScaleWidth, :visibleLogicalRange, :visibleRange, :watermark, :width]
         wild_props = Symbol[]
-        return Component("tvlwc", "Tvlwc", "dash_tvlwc", available_props, wild_props; kwargs...)
+        return Component("tvlwo", "Tvlwo", "dash_tvlwc", available_props, wild_props; kwargs...)
 end
 

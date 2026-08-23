@@ -99,6 +99,10 @@ def panel(title, meta, *children):
     ])
 
 
+def prose(*children):
+    return html.Div(className='prose', children=list(children))
+
+
 def toolbar(*buttons):
     return html.Div(className='toolbar', children=list(buttons))
 

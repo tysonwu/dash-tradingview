@@ -6,6 +6,8 @@ const resources_path = realpath(joinpath( @__DIR__, "..", "deps"))
 const version = "0.2.0-dev"
 
 include("jl/tvlwc.jl")
+include("jl/tvlwo.jl")
+include("jl/tvlwy.jl")
 
 function __init__()
     DashBase.register_package(

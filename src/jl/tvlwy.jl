@@ -1,14 +1,17 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
-export tvlwc
+export tvlwy
 
 """
-    tvlwc(;kwargs...)
+    tvlwy(;kwargs...)
 
-A Tvlwc component.
-Tradingview Lightweight Chart on a time axis. Data points carry `time` as a
-`YYYY-MM-DD` string, a `{year, month, day}` object, or a UTC timestamp in
-seconds, and every payload reports times back in the form they were given in.
+A Tvlwy component.
+Tradingview Lightweight Chart on a maturity axis, for yield curves. Points
+carry `time` as a number of `chartOptions.yieldCurve.baseResolution` units
+from `startTimeRange`, which defaults to months from zero, so a ten-year
+point is written `{'time': 120, 'value': 4.3}`. The chart spaces maturities
+by that value rather than evenly, which is what makes the short end of a
+curve read correctly. Points must be unique and ascending in `time`.
 Keyword arguments:
 - `id` (String; optional): The ID of this component.
 - `barsInLogicalRange` (Bool | Real | String | Dict | Array; optional): Bars available around the visible range, as `{barsBefore, barsAfter,
@@ -16,13 +19,27 @@ from, to, seriesId}`; read-only. Describes the first entry in `series`,
 and names it in `seriesId`. A negative `barsBefore` means the user has
 scrolled past the start of the data, which is the signal to fetch more
 history. Written only when `subscribeVisibleRange` is true.
-- `chartOptions` (optional): Object containing all chart options. Mirrors the `ChartOptions` interface
-of the underlying charting library. Option values that must be functions,
-such as `localization.priceFormatter` and `timeScale.tickMarkFormatter`,
-are given as the string name of a function registered on
-`window.dashTvlwcFunctions`.. chartOptions has the following type: lists containing elements 'timeScale', 'localization', 'width', 'height', 'autoSize', 'layout', 'leftPriceScale', 'rightPriceScale', 'defaultVisiblePriceScaleId', 'overlayPriceScales', 'crosshair', 'grid', 'handleScroll', 'handleScale', 'kineticScroll', 'trackingMode', 'addDefaultPane', 'hoveredSeriesOnTop'.
+- `chartOptions` (optional): Object containing all chart options. Mirrors the `YieldCurveChartOptions`
+interface of the underlying charting library: the ordinary chart options
+object plus a `yieldCurve` group of `baseResolution` (the smallest time
+unit, default 1 month), `minimumTimeRange` (default 120, so ten years are
+always in view) and `startTimeRange` (default 0).
+
+To label the maturity axis, give `localization.timeFormatter` the string
+name of a function registered on `window.dashTvlwcFunctions`. It receives
+the maturity in `baseResolution` units and returns the label; without one
+the axis falls back to `6M` and `5Y` style defaults.
+
+`yieldCurve.formatTime` looks like the option for that and is not. The
+upstream typings declare it, but lightweight-charts 5.2.1 never reads it,
+so setting it changes nothing. Passing it here logs a warning pointing at
+`localization.timeFormatter` rather than failing silently.
+
+There is no `timeScale.tickMarkFormatter` here either; that option belongs
+to time charts. Every other `timeScale` option applies unchanged.. chartOptions has the following type: lists containing elements 'yieldCurve', 'localization', 'width', 'height', 'autoSize', 'layout', 'leftPriceScale', 'rightPriceScale', 'defaultVisiblePriceScaleId', 'overlayPriceScales', 'timeScale', 'crosshair', 'grid', 'handleScroll', 'handleScale', 'kineticScroll', 'trackingMode', 'addDefaultPane', 'hoveredSeriesOnTop'.
 Those elements have the following types:
-  - `timeScale` (Bool | Real | String | Dict | Array; optional): Extended time scale options with option to override tickMarkFormatter
+  - `yieldCurve` (Bool | Real | String | Dict | Array; optional): Yield curve specific options.
+This object contains all the settings related to how the yield curve is displayed and behaves.
   - `localization` (Bool | Real | String | Dict | Array; optional): Localization options.
   - `width` (Real; optional): Width of the chart in pixels
 @,defaultValue,If `0` (default) or none value provided, then a size of the widget will be calculated based its container's size.
@@ -54,6 +71,7 @@ This affects behaviors that depend on the pane's default side, such as:
 - crosshair price coordinate conversion and magnet snapping
 @,defaultValue,`'right'`
   - `overlayPriceScales` (Bool | Real | String | Dict | Array; optional): Overlay price scale options
+  - `timeScale` (Bool | Real | String | Dict | Array; optional): Time scale options
   - `crosshair` (Bool | Real | String | Dict | Array; optional): The crosshair shows the intersection of the price and time scale values at any point on the chart.
   - `grid` (Bool | Real | String | Dict | Array; optional): A grid is represented in the chart background as a vertical and horizontal lines drawn at the levels of visible marks of price and the time scales.
   - `handleScroll` (Bool; optional): Scroll options, or a boolean flag that enables/disables scrolling
@@ -154,7 +172,7 @@ options, markers and price lines.. series has the following type: Array of lists
 Those elements have the following types:
   - `id` (String; required): Stable identity for this series. Used to key incremental updates and to
 key the `crosshair`, `click` and `fullSeriesOptions` payloads.
-  - `type` (a value equal to: 'area', 'bar', 'baseline', 'candlestick', 'histogram', 'line'; required): Which kind of series to draw. The names this chart accepts are the ones
+  - `type` (a value equal to: 'area', 'line'; required): Which kind of series to draw. The names this chart accepts are the ones
 listed on this field's type; `bar` and `candlestick` need OHLC points,
 and the rest take a single `value`.
   - `data` (Array of Bool | Real | String | Dict | Arrays; required): Data points. Items carrying only `time` are whitespace and render as gaps.
@@ -221,9 +239,9 @@ back will often not equal what was set.
 for text. `None` removes it.
 - `width` (String | Real; optional): Sets width of the parent div of the chart.
 """
-function tvlwc(; kwargs...)
+function tvlwy(; kwargs...)
         available_props = Symbol[:id, :barsInLogicalRange, :chartOptions, :click, :crosshair, :crosshairPosition, :dataAction, :dataResult, :dblClick, :fullChartOptions, :fullPriceScaleOptions, :fullSeriesOptions, :fullTimeScaleOptions, :height, :paneOptions, :priceScaleWidth, :reportThrottle, :screenshot, :screenshotRequest, :series, :subscribeClick, :subscribeCrosshair, :subscribeDblClick, :subscribeSize, :subscribeVisibleRange, :tick, :timeScaleAction, :timeScaleHeight, :timeScaleWidth, :visibleLogicalRange, :visibleRange, :watermark, :width]
         wild_props = Symbol[]
-        return Component("tvlwc", "Tvlwc", "dash_tvlwc", available_props, wild_props; kwargs...)
+        return Component("tvlwy", "Tvlwy", "dash_tvlwc", available_props, wild_props; kwargs...)
 end
 

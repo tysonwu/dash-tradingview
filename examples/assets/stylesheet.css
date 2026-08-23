@@ -217,6 +217,49 @@ body {
     gap: 10px;
 }
 
+/* Intro copy and per-panel explanation. Prose is the one place the page relaxes
+ * the dense-UI type scale, because it is read rather than scanned. */
+.prose {
+    max-width: 78ch;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+}
+
+.prose a,
+.prose code {
+    color: var(--ios-blue);
+}
+
+.prose code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+}
+
+.note {
+    margin: 8px 0 0;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--muted-foreground);
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 28px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+}
+
 /* options.py: six equal panels. A uniform grid keeps every chart at the same
  * bar density and removes the half-empty row a spanning hero panel leaves. */
 .options-grid {
@@ -226,6 +269,16 @@ body {
 /* interactivity.py: three columns of callback demos. */
 .interactivity-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* v5_features.py: capability panels carry a chart, controls and a readout, so
+ * they need more room than a plain option toggle. */
+.capability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.capability-grid .wide {
+    grid-column: 1 / -1;
 }
 
 /* Adapt composition, not visual language. */
@@ -244,7 +297,12 @@ body {
     }
 
     .options-grid,
-    .interactivity-grid {
+    .interactivity-grid,
+    .capability-grid {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .capability-grid .wide {
+        grid-column: auto;
     }
 }

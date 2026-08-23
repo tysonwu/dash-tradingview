@@ -1,16 +1,16 @@
 % Auto-generated: do not edit by hand
-\name{tvlwc}
+\name{tvlwo}
 
-\alias{tvlwc}
+\alias{tvlwo}
 
-\title{Tvlwc component}
+\title{Tvlwo component}
 
 \description{
-Tradingview Lightweight Chart on a time axis. Data points carry `time` as a `YYYY-MM-DD` string, a `{year, month, day}` object, or a UTC timestamp in seconds, and every payload reports times back in the form they were given in.
+Tradingview Lightweight Chart on a price axis, for option payoff and volatility curves. Points carry `time` as a number, which the chart reads as a position on the horizontal price scale rather than as a moment, so a strike of 105.5 is written `{'time': 105.5, 'value': ...}`. Points must still be unique and ascending in `time`.
 }
 
 \usage{
-tvlwc(id=NULL, barsInLogicalRange=NULL, chartOptions=NULL,
+tvlwo(id=NULL, barsInLogicalRange=NULL, chartOptions=NULL,
 click=NULL, crosshair=NULL, crosshairPosition=NULL,
 dataAction=NULL, dataResult=NULL, dblClick=NULL,
 fullChartOptions=NULL, fullPriceScaleOptions=NULL,
@@ -34,10 +34,9 @@ and names it in `seriesId`. A negative `barsBefore` means the user has
 scrolled past the start of the data, which is the signal to fetch more
 history. Written only when `subscribeVisibleRange` is true.}
 
-\item{chartOptions}{Lists containing elements 'timescale', 'localization', 'width', 'height', 'autosize', 'layout', 'leftpricescale', 'rightpricescale', 'defaultvisiblepricescaleid', 'overlaypricescales', 'crosshair', 'grid', 'handlescroll', 'handlescale', 'kineticscroll', 'trackingmode', 'adddefaultpane', 'hoveredseriesontop'.
+\item{chartOptions}{Lists containing elements 'localization', 'width', 'height', 'autosize', 'layout', 'leftpricescale', 'rightpricescale', 'defaultvisiblepricescaleid', 'overlaypricescales', 'timescale', 'crosshair', 'grid', 'handlescroll', 'handlescale', 'kineticscroll', 'trackingmode', 'adddefaultpane', 'hoveredseriesontop'.
 those elements have the following types:
-  - timescale (logical | numeric | character | named list | unnamed list; optional): extended time scale options with option to override tickmarkformatter
-  - localization (logical | numeric | character | named list | unnamed list; optional): localization options.
+  - localization (logical | numeric | character | named list | unnamed list; optional): localization options for formatting price values and other chart elements.
   - width (numeric; optional): width of the chart in pixels
 @,defaultvalue,if `0` (default) or none value provided, then a size of the widget will be calculated based its container's size.
   - height (numeric; optional): height of the chart in pixels
@@ -68,6 +67,7 @@ this affects behaviors that depend on the pane's default side, such as:
 - crosshair price coordinate conversion and magnet snapping
 @,defaultvalue,`'right'`
   - overlaypricescales (logical | numeric | character | named list | unnamed list; optional): overlay price scale options
+  - timescale (logical | numeric | character | named list | unnamed list; optional): time scale options
   - crosshair (logical | numeric | character | named list | unnamed list; optional): the crosshair shows the intersection of the price and time scale values at any point on the chart.
   - grid (logical | numeric | character | named list | unnamed list; optional): a grid is represented in the chart background as a vertical and horizontal lines drawn at the levels of visible marks of price and the time scales.
   - handlescroll (logical; optional): scroll options, or a boolean flag that enables/disables scrolling
@@ -82,11 +82,20 @@ disable this option when you want to create a chart with no panes and add them m
 
 this only affects drawing and hit-testing order while the series is hovered; it doesn't
 change the stored series order.
-@,defaultvalue,`true`. Object containing all chart options. Mirrors the `ChartOptions` interface
-of the underlying charting library. Option values that must be functions,
-such as `localization.priceFormatter` and `timeScale.tickMarkFormatter`,
-are given as the string name of a function registered on
-`window.dashTvlwcFunctions`.}
+@,defaultvalue,`true`. Object containing all chart options. Mirrors the `PriceChartOptions`
+interface of the underlying charting library, which is the ordinary chart
+options object with one addition: `localization.precision` sets how many
+decimal places the horizontal axis labels carry.
+
+There is no `timeScale.tickMarkFormatter` here. That option belongs to
+time charts; the horizontal axis is formatted through
+`localization.precision` instead. Every other `timeScale` option applies
+unchanged, including `barSpacing`, `minBarSpacing`, the borders and the
+conflation group.
+
+Option values that must be functions, such as
+`localization.priceFormatter`, are given as the string name of a function
+registered on `window.dashTvlwcFunctions`.}
 
 \item{click}{Logical | numeric | character | named list | unnamed list. Last-clicked chart position; read-only. Same shape as `crosshair`.
 Written only when `subscribeClick` is true.}

@@ -59,7 +59,7 @@ html_context = {
 
 html_theme_options = {
     "source_repository": "https://github.com/tysonwu/dash-tradingview/",
-    "source_branch": "master",
+    "source_branch": "main",
     "source_directory": "docs/",
 #     "repository_url": "https://github.com/tysonwu/dash-tradingview",
 #     "icon_links": [
