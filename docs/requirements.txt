@@ -1,3 +1,5 @@
-sphinx
-myst-parser
-furo
+# Pinned so a future Sphinx release cannot break the docs build without a
+# deliberate change here. Requires the Python named in .readthedocs.yaml.
+sphinx>=9.1,<10
+myst-parser>=5.1,<6
+furo>=2025.12
