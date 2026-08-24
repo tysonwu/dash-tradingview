@@ -30,16 +30,21 @@ _this_module = _sys.modules[__name__]
 
 async_resources = []
 
+# Apps running with `serve_locally=False` fetch the bundles from jsDelivr,
+# which serves them straight out of the `v<version>` tag on GitHub. Tag the
+# release before publishing to PyPI, or these URLs 404 for those apps.
+_repo = package['homepage'].replace('https://github.com/', '')
+_cdn_base = 'https://cdn.jsdelivr.net/gh/{0}@v{1}/{2}'.format(
+    _repo, __version__, package_name)
+
 _js_dist = []
 
 _js_dist.extend(
     [
         {
             "relative_package_path": "async-{}.js".format(async_resource),
-            "external_url": (
-                "https://unpkg.com/{0}@{2}"
-                "/{1}/async-{3}.js"
-            ).format(package_name, __name__, __version__, async_resource),
+            "external_url": "{0}/async-{1}.js".format(
+                _cdn_base, async_resource),
             "namespace": package_name,
             "async": True,
         }
@@ -47,15 +52,12 @@ _js_dist.extend(
     ]
 )
 
-# TODO: Figure out if unpkg link works
 _js_dist.extend(
     [
         {
             "relative_package_path": "async-{}.js.map".format(async_resource),
-            "external_url": (
-                "https://unpkg.com/{0}@{2}"
-                "/{1}/async-{3}.js.map"
-            ).format(package_name, __name__, __version__, async_resource),
+            "external_url": "{0}/async-{1}.js.map".format(
+                _cdn_base, async_resource),
             "namespace": package_name,
             "dynamic": True,
         }
@@ -67,14 +69,13 @@ _js_dist.extend(
     [
         {
             'relative_package_path': 'dash_tvlwc.min.js',
-    'external_url': 'https://unpkg.com/{0}@{2}/{1}/{1}.min.js'.format(
-                package_name, __name__, __version__),
+            'external_url': '{0}/{1}.min.js'.format(_cdn_base, package_name),
             'namespace': package_name
         },
         {
             'relative_package_path': 'dash_tvlwc.min.js.map',
-    'external_url': 'https://unpkg.com/{0}@{2}/{1}/{1}.min.js.map'.format(
-                package_name, __name__, __version__),
+            'external_url': '{0}/{1}.min.js.map'.format(
+                _cdn_base, package_name),
             'namespace': package_name,
             'dynamic': True
         }

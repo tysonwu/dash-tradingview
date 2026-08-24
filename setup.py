@@ -22,6 +22,17 @@ setup(
     include_package_data=True,
     license=package['license'],
     description=package.get('description', package_name),
+    url=package['homepage'],
+    project_urls={
+        'Documentation': 'https://dash-tradingview.readthedocs.io/',
+        'Source': package['homepage'],
+        'Issues': package['bugs']['url'],
+        'Demo': 'http://tysonwu.pythonanywhere.com/',
+    },
+    keywords=[
+        'dash', 'plotly', 'tradingview', 'lightweight-charts',
+        'charting', 'candlestick', 'finance', 'visualization',
+    ],
     install_requires=['dash>=3.0.0'],
     python_requires='>=3.9',
     classifiers=[
